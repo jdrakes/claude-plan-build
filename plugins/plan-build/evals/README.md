@@ -8,8 +8,9 @@ before reading anything into these cases.
 Twenty cases, each one prompt paired with a grader. Every prompt is a
 verbatim line from one person's real work transcripts, taken over three
 weeks (2026-09-01 to 2026-09-23). The wording is the data: nothing here is
-invented or reworded. That is the reason the suite is still in the repo. A
-later suite should start from these prompts rather than from made-up ones.
+invented or reworded, with one exception recorded below so that claim
+stays true. That is the reason the suite is still in the repo. A later
+suite should start from these prompts rather than from made-up ones.
 
 ## What the graders actually score
 
@@ -100,3 +101,10 @@ used only to derive the distribution of shapes, never quoted.
 They are real, they are all work, and they are safe to publish. Their
 graders score invocation, which is the wrong event. They remain a starting
 point for shape, not for labels.
+
+## One redaction
+
+`should-i-marketplace` had its opening sentence removed at the author's
+request. The rest of that prompt is unchanged, and no other prompt has been
+edited. The removed sentence named a motive for publishing rather than
+anything about the request, so the case still tests what it tested.
