@@ -1,4 +1,4 @@
-# design-spec.md — the measured geometry behind this renderer
+# design-spec.md: the measured geometry behind this renderer
 
 Page geometry, colour, and type scale in §1-§5 are physical measurements
 taken from a rendered PDF's own content streams and word positions, so they
@@ -30,8 +30,8 @@ the snapshot baseline (§7) in the same commit.
 
 The navy band is **full bleed**: `sidebar-band()` in `components.typ` paints
 it via `place()` at the true page edge, sized to the full page height,
-independent of `page(margin: ...)`. It repeats on every page automatically —
-Typst re-evaluates the page `background` for each page in the flow — with no
+independent of `page(margin: ...)`. It repeats on every page automatically
+(Typst re-evaluates the page `background` for each page in the flow), with no
 equivalent of the HTML pipeline's repeating-`<thead>` trick required. See §6
 point 1.
 
@@ -50,8 +50,8 @@ point 1.
 Two families, copied into this skill's own `fonts/` so a build never depends
 on what the host has installed:
 
-* **Oswald Medium** (500) — name, section headings, sidebar headings
-* **Lato** Regular (400) + Bold (700) — everything else
+* **Oswald Medium** (500): name, section headings, sidebar headings
+* **Lato** Regular (400) + Bold (700): everything else
 
 | Element | Font | Size | Notes |
 |---|---|---|---|
@@ -65,7 +65,7 @@ on what the host has installed:
 | Sidebar items | Lato Regular | 8pt | pure white |
 
 Bullets: glyph `•` (U+2022) at `x=55pt`, text at `x=64pt` (13pt / 22pt from
-the 42pt margin) — see §6 point 3 for how Typst's `list()` reaches that x
+the 42pt margin). See §6 point 3 for how Typst's `list()` reaches that x
 position.
 
 **The separator in a date range is a plain hyphen**, `geo.date-sep` in
@@ -81,11 +81,11 @@ type decision rather than a punctuation one.
 `(heading→item, item→item, item→next-heading)` triple are in
 `components.typ`'s `geo.sidebar-top` / `geo.sb-rhythm`. All of it was
 calibrated against a real rendered resume with populated, multi-item Skills
-(8 items) and Hobbies (5 items) blocks (see §7a) — the values are measured,
+(8 items) and Hobbies (5 items) blocks (see §7a); the values are measured,
 not placeholders, for every block that content exercised.
 
 * `gap-edu-edu` (the gap between a later education entry and the one before
-  it) is still a placeholder — copied from `gap-bullets-job`'s calibrated
+  it) is still a placeholder, copied from `gap-bullets-job`'s calibrated
   value (`15.73pt`), because no content calibrated against has had two or
   more education entries to isolate its own true value. It is a *guess that
   reuses a job-specific number*, not a measurement of education-specific
@@ -94,7 +94,7 @@ not placeholders, for every block that content exercised.
 * **`edu-entry` pagination gap:** the same theoretical heading-to-content
   page-break gap `job-entry` had (a degree/school heading could in
   principle get stranded from its year line). Fixed the same way
-  `job-entry` was — `edu-entry` merges the degree/school heading and its
+  `job-entry` was: `edu-entry` merges the degree/school heading and its
   year line into one `block(breakable: false)` unit.
 
 ## 5. Content source
@@ -121,7 +121,7 @@ measuring the resulting page:
 2. **Column width is `336.3pt`, not the measured `329.28pt`.** Like
    Chrome's Lato, Typst's own text shaping wraps one word early at the true
    width. Every line matched against real content (see §7a) reproduces its
-   target break anywhere in `[336.15, 336.5]pt` — a plateau almost identical
+   target break anywhere in `[336.15, 336.5]pt`, a plateau almost identical
    to the HTML version's own `[335, 338]pt` one, landing on nearly the same
    number for an unrelated reason (independent text-shaping engines
    converging on the same font file's metrics). `336.3pt` is the middle.
@@ -137,7 +137,7 @@ measuring the resulting page:
 4. **`par.leading` is added on top of the font's own natural line height,
    not the total pitch.** CSS `line-height: 12.825pt` *is* the total
    baseline-to-baseline distance. Typst's `par.leading` is extra space added
-   on top of Lato 9pt's own natural single-line metric — empirically
+   on top of Lato 9pt's own natural single-line metric, empirically
    `6.448pt` at this font/size, found by rendering two different `leading`
    values, measuring the resulting on-page pitch for each, and solving the
    resulting linear relationship. `body-line-const` in `components.typ`
@@ -147,7 +147,7 @@ measuring the resulting page:
 5. **Every block-level gap needed re-measuring, not just line-height.**
    Typst's default block/paragraph spacing (roughly `1.2em`, scaled to
    whichever text size is locally active) stacks on top of every explicit
-   `v()` gap unless zeroed — `template.typ` sets `block(spacing: 0pt)` /
+   `v()` gap unless zeroed. `template.typ` sets `block(spacing: 0pt)` /
    `par(spacing: 0pt)` globally so `v()` is the only source of vertical
    rhythm, matching the pattern `bullet-list` already used locally for its
    own list par. Once that was zeroed, every main-column gap
@@ -156,7 +156,7 @@ measuring the resulting page:
    `body-line-const`: the retired HTML pipeline's tuned CSS custom properties
    (its `:root` block) were the starting hypothesis for the main column (the
    best available approximation of the true rhythm, since Typst has no
-   "true" measurement of its own — see the values and the CSS source in
+   "true" measurement of its own, see the values and the CSS source in
    `components.typ`'s comments), then each was corrected against the
    position measured in the rendered page. A page's first line also sits
    above its own nominal box top by a roughly constant amount that differs
@@ -164,7 +164,7 @@ measuring the resulting page:
    vs `2.06pt` for 9pt Lato body text (later pages, which open mid-bullet).
    `margin-top` (`46.06pt`) is calibrated for the body-text case since it
    applies to every page; `pad-top` (`5.89pt`) adds the extra space the name
-   specifically needs, once, before it — the same split the retired HTML
+   specifically needs, once, before it, the same split the retired HTML
    pipeline made for the analogous Chrome quirk (`--pad-top` on top of a
    `42.88pt` spacer).
 
@@ -181,7 +181,7 @@ measuring the resulting page:
    always `education: []`, so `edu-entry()` had never been exercised):
    Typst's `upper()` requires a string and throws on an integer. `edu-entry`
    now does `str(edu.at("year", default: ""))` before comparing/uppercasing
-   it — the retired HTML pipeline's Python/Jinja2 templating never hit this
+   it. The retired HTML pipeline's Python/Jinja2 templating never hit this
    because Python coerces both types the same way when interpolated into a
    template string.
 
@@ -189,7 +189,7 @@ measuring the resulting page:
    Typst's default paragraph leading (~`0.65em`) produced a `13.73pt` wrap
    pitch for a two-line degree name; the reference measures `14.25pt`
    (§4). Set explicitly to `7.02pt` (found the same way as
-   `body-line-const` in point 4 — solve the linear relationship between a
+   `body-line-const` in point 4: solve the linear relationship between a
    changed `leading` value and the resulting on-page pitch) rather than
    left at the Typst default.
 
@@ -208,7 +208,7 @@ no job or education heading is ever stranded from what must follow it, and
 the sidebar band stayed full-bleed on every page. Re-run that check after any
 change to `bullet-item`, `job-entry`, or `edu-entry`: copy a content file,
 triple every job's bullet list in the copy, build it, and read every page
-break in the result. It is a manual check, deliberately — it asks whether a
+break in the result. It is a manual check, deliberately: it asks whether a
 page break lands somewhere a reader would forgive, which is not a question
 the snapshot test in §7 can answer.
 
@@ -236,7 +236,7 @@ was in both x and y.
 Elementwise is the point. Both sides come from the same renderer on the same
 content, sorted the same way, so line N of one is line N of the other and
 there is no need to find a line by its text. Matching by text answers the
-weaker question "does this line exist somewhere in the document" — which a
+weaker question "does this line exist somewhere in the document", which a
 page overflow, a whole column shifting sideways, and a stray extra line all
 survive. Nothing in the check is a hand-maintained constant that can drift
 out of agreement with reality: the baseline's own contents are the
@@ -267,7 +267,7 @@ papered over, so the diff is the only thing standing between those two.
 Every value in §4 and §6 was calibrated against a real rendered resume
 produced by the commercial template this design clones, with populated
 multi-item sidebar blocks (8 skills, 5 hobbies) and a populated education
-entry — sidebar content is what exposed a per-item drift that had reached
+entry: sidebar content is what exposed a per-item drift that had reached
 79pt by the last sidebar line, and education content is what surfaced the two
 Typst quirks in §6 points 7-8. That reference is not shipped and is not
 needed again: the snapshot test in §7 is what keeps these values honest now.
@@ -277,7 +277,7 @@ needed again: the snapshot test in §7 is what keeps these values honest now.
 For a period, two independent renderers consumed this same content format:
 this Typst one and an HTML/CSS + headless-Chrome one. On identical content
 they agreed at `matched 133/133` word positions, `dx = 0.00pt`, worst
-`|dy| = 0.99pt` — two implementations, written separately, landing on the
+`|dy| = 0.99pt`, two implementations, written separately, landing on the
 same page to within a point.
 
 The second implementation is gone, so that check cannot be re-run. What
@@ -296,7 +296,7 @@ screener reads against real postings found this same defect.
 
 The fix (`components.typ`'s `nbh()`, applied to every body-text and heading
 render path) replaces a mid-word "-" with a non-breaking hyphen (U+2011)
-before layout, so the word is never split at that character — it moves to
+before layout, so the word is never split at that character; it moves to
 the next line as a whole instead. This is correct and necessary; it is also
 not free. Preventing a break at a hyphen changes where the line breaks,
 which reflows everything after it in that paragraph.
@@ -306,7 +306,7 @@ from a renderer that did split words at hyphens: 16 of its 122 lines moved
 their break on purpose, leaving `106/122` identical breaks, with worst
 `|dy|` unchanged at `0.75pt` and `dx`, page count and page breaks
 unaffected. A permanent, correct divergence from a reference that reproduces
-the defect this fix removes — which is exactly why the baseline in §7 is a
+the defect this fix removes, which is exactly why the baseline in §7 is a
 render of this renderer rather than of any other.
 
 ## 7d. Per-content margins
@@ -325,7 +325,7 @@ floor to reach for, still above the `36pt` (0.5in) print-safe minimum.
 ## 8. Font provenance
 
 `Lato-Regular.ttf` and `Lato-Bold.ttf` are the Google Fonts originals.
-`Oswald-Medium.ttf` was instantiated from the Oswald variable font — the
+`Oswald-Medium.ttf` was instantiated from the Oswald variable font. The
 retired HTML pipeline needed this because a variable font makes Chrome embed
 headings as Type 3 outlines rather than real text, and the instantiated file
 was carried over here unchanged rather than re-derived:
