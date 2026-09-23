@@ -1,0 +1,15 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "jdrakes",
+  "description": "James Drakes' Claude Code plugins.",
+  "owner": { "name": "James Drakes", "email": "james@jamesdrakes.com" },
+  "plugins": [
+    {
+      "name": "plan-build",
+      "description": "An opinionated agent workflow for planning and building software changes: one approved plan, one fresh subagent per task, the project's tests as the gate, one review at the end of the branch.",
+      "author": { "name": "James Drakes" },
+      "category": "workflow",
+      "source": "./plugins/plan-build"
+    }
+  ]
+}
