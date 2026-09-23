@@ -97,7 +97,7 @@ class CandidatesTests(unittest.TestCase):
 
     def test_display_form_is_the_most_frequent_casing(self):
         # The aggregated row is shown under the casing that dominates the
-        # corpus, so output reads "PagerDuty", not "pagerduty".
+        # corpus, so output reads "PagerDuty" and not "pagerduty".
         tracked = []
         text = "pagerduty pages. PagerDuty rotates. PagerDuty escalates."
         result = candidates(text, tracked)
@@ -134,8 +134,8 @@ class CandidatesTests(unittest.TestCase):
     def test_slash_separated_alternatives_count_as_separate_terms(self):
         # "Terraform/Pulumi" names two real tools, and a human reads it as
         # one mention of each. Counted as one glued token, a term named
-        # three times across glued and bare forms totals three rather than
-        # splitting into rows that each fall under --min-count.
+        # three times becomes three rows of one mention each and vanishes
+        # under the default --min-count 2.
         tracked = []
         text = ("Deep expertise in Terraform/Pulumi. Strong Terraform/Ansible "
                 "background. We use Terraform daily for infrastructure.")
