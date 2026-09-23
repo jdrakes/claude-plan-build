@@ -13,11 +13,19 @@ import sys
 import tempfile
 from pathlib import Path
 
-# Matching is case-sensitive and substring-based, which leaves two
-# false-positive risks worth knowing about. "Spruce" is an ordinary English
-# word as well as a former employer. "job_search" will not fire on the
-# phrase "job search", but "job-search-archive" would fire on any future
-# prose that happens to name a job-search archive meaning something else.
+# Matching is case-insensitive and substring-based. Case-insensitive because
+# a lowercase "james" or "drakes" is the same leak as a capitalised one and
+# used to pass; one uniform rule beats a second list of identity-only
+# strings. Measured before the switch: every string below, matched
+# case-insensitively over all 117 publishable files in the scan set, returns
+# exactly the hits it returned case-sensitively, so nothing already written
+# breaks.
+#
+# Two false-positive risks are worth knowing about, both widened slightly by
+# the case fold. "Spruce" is an ordinary English word as well as a former
+# employer, and lowercase "spruce" now matches too. "job_search" will not
+# fire on the phrase "job search", but "job-search-archive" would fire on any
+# future prose naming a job-search archive that means something else.
 # "James_Drakes" is deliberately absent: it contains "James", which already
 # matches.
 LEAK_STRINGS = [
@@ -35,6 +43,9 @@ LEAK_STRINGS = [
     "james-drakes",
     "resumeio-",
     "claude-config",
+    "$HOME/workspace",
+    "974d05a",
+    "superpowers",
 ]
 SCAN_DIR_NAMES = {"skills", "agents", "docs", "evals", "evals2", "tests"}
 EXCLUDED_DIR_NAMES = {".claude-plugin", "scripts", ".git"}
@@ -58,8 +69,9 @@ def scan_file(path):
     try:
         with open(path, "r", encoding="utf-8", errors="replace") as handle:
             for line_number, line in enumerate(handle, start=1):
+                lowered = line.lower()
                 for needle in LEAK_STRINGS:
-                    if needle in line:
+                    if needle.lower() in lowered:
                         hits.append((line_number, needle))
     except (IsADirectoryError, PermissionError):
         pass
@@ -143,10 +155,16 @@ def run_self_test():
         with open(nested_readme, "w", encoding="utf-8") as handle:
             handle.write("This nested README names jdrakes.\n")
 
-        # Pins the two resume-kit additions: tests/ is a scan directory, and
-        # the nine strings below are on the list. One needle per line, and no
-        # line matches a needle other than its own, so dropping any string
-        # from LEAK_STRINGS drops exactly one expected line from the report.
+        # Pins that tests/ is a scan directory and that each string below is
+        # on the list: every assertion names its own needle, so dropping that
+        # string from LEAK_STRINGS drops exactly that expected line. A line
+        # may report more than one needle ("james-drakes" reports three under
+        # the case fold), which the presence assertions tolerate.
+        #
+        # The last line is the case-fold pin: written in lowercase, it must
+        # still be reported under the capitalised needles "James" and
+        # "Drakes". Case-sensitive matching leaves it silent, which is how a
+        # private path reached a published file once already.
         leaky_dir = os.path.join(temp_dir, "tests")
         os.makedirs(leaky_dir)
         with open(os.path.join(leaky_dir, "leaky.md"), "w", encoding="utf-8") as handle:
@@ -160,6 +178,10 @@ def run_self_test():
                 "james-drakes\n"
                 "resumeio-\n"
                 "claude-config\n"
+                "$HOME/workspace\n"
+                "974d05a\n"
+                "superpowers\n"
+                "written by james drakes in lowercase\n"
             )
 
         captured = io.StringIO()
@@ -189,6 +211,11 @@ def run_self_test():
             (7, "james-drakes"),
             (8, "resumeio-"),
             (9, "claude-config"),
+            (10, "$HOME/workspace"),
+            (11, "974d05a"),
+            (12, "superpowers"),
+            (13, "James"),
+            (13, "Drakes"),
         ]:
             expected_line = f"{leaky_relative}:{line_number}: {needle}"
             assert expected_line in output, (

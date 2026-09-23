@@ -1,18 +1,19 @@
 """The renderer fidelity check must find its inputs from its own location.
 
-`check-fidelity.sh` used to anchor the repo at `$HOME/workspace/resumes`.
-That is only true on one machine: a CI runner checks the repo out somewhere
-else entirely with `$HOME` set to `/root` or `/home/runner`, and the check
-failed with "fixture ... missing" before it ever compiled anything. These
-tests pin the fix: the script resolves its own skill directory from its own
-file location, and keeps working through a symlinked skill directory, which
-is how a plugin is reached under `~/.claude/plugins/` (which is why the
-resolution has to be physical, not logical -- walking ".." out of the
-symlinked path lands in the wrong place otherwise).
+An earlier version of `check-fidelity.sh` anchored its inputs at a fixed
+absolute path built from `$HOME`. That path is correct on exactly one
+machine: a CI runner checks the repository out somewhere else entirely, with
+`$HOME` set to something like `/root`, and the check failed with
+"fixture ... missing" before it ever compiled anything. These tests pin the
+fix. The script resolves its own skill directory from its own file location,
+and keeps working through a symlinked skill directory, which is how an
+installed plugin is reached. That is also why the resolution has to be
+physical rather than logical: walking ".." out of a symlinked path lands
+somewhere else otherwise.
 
-Ported from resumes/tests/test_fidelity_paths.py. Only CheckFidelityPathTests
-survives: CompareDefaultRefTests tested compare.py's DEFAULT_REF, and Task 4
-deleted compare.py along with the golden-reference fixture it pointed at.
+Only the path tests were carried over from the renderer's original suite.
+The rest covered a golden-reference comparison script, deleted along with
+the fixture it pointed at when the snapshot test replaced it.
 """
 
 import os
