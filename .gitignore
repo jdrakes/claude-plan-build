@@ -4,7 +4,10 @@ __pycache__/
 # Eval run artifacts and raw result JSON: machine-generated, and they embed
 # absolute paths from the machine that ran them, which the leak test fails
 # on. The written-up markdown in docs/ is the artifact worth keeping.
-**/evals/results/
+# The pattern is **/results/ rather than **/evals/results/: an earlier
+# version named one eval directory and stopped matching the moment a
+# second one (evals2/) existed.
+**/results/
 docs/*.json
 
 # Worktrees the build skill creates. ~/.claude is not involved here; this

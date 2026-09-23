@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Scan skills/, agents/, docs/ and evals/ for leaked private references.
+"""Scan skills/, agents/, docs/, evals/ and evals2/ for leaked private
+references.
 
 Real run:  python3 scripts/test_no_leaks.py
 Self-test: python3 scripts/test_no_leaks.py --self-test
@@ -13,14 +14,13 @@ import tempfile
 from pathlib import Path
 
 LEAK_STRINGS = ["James", "jdrakes", "~/workspace", "knowledge-base", "jamesdrakes.com"]
-SCAN_DIR_NAMES = {"skills", "agents", "docs", "evals"}
+SCAN_DIR_NAMES = {"skills", "agents", "docs", "evals", "evals2"}
 EXCLUDED_DIR_NAMES = {".claude-plugin", "scripts", ".git"}
-EXCLUDED_FILE_NAMES = {"README.md"}
 
 
 def find_scan_roots(repo_root):
-    """Find every directory named skills/agents/docs/evals anywhere under
-    repo_root, without descending into excluded directories."""
+    """Find every directory named skills/agents/docs/evals/evals2 anywhere
+    under repo_root, without descending into excluded directories."""
     roots = []
     for dirpath, dirnames, _ in os.walk(repo_root):
         dirnames[:] = [name for name in dirnames if name not in EXCLUDED_DIR_NAMES]
@@ -62,15 +62,17 @@ def publishable_files(repo_root):
 
 def scan_repo(repo_root):
     """Return a list of (relative_path, line_number, needle) hits under
-    repo_root's skills/, agents/, docs/ and evals/ directories."""
+    repo_root's skills/, agents/, docs/, evals/ and evals2/ directories.
+
+    The repository's own README.md is never scanned: nothing above it is a
+    scan directory, so it is the one file allowed to name the author. A
+    README nested under a scan directory is content and is scanned."""
     all_hits = []
     candidates = publishable_files(repo_root)
     if candidates is not None:
         for relative_path in sorted(candidates):
             parts = relative_path.split(os.sep)
             if not any(part in SCAN_DIR_NAMES for part in parts[:-1]):
-                continue
-            if parts[-1] in EXCLUDED_FILE_NAMES:
                 continue
             if any(part in EXCLUDED_DIR_NAMES for part in parts[:-1]):
                 continue
@@ -81,8 +83,6 @@ def scan_repo(repo_root):
         for dirpath, dirnames, filenames in os.walk(scan_root):
             dirnames[:] = [name for name in dirnames if name not in EXCLUDED_DIR_NAMES]
             for filename in sorted(filenames):
-                if filename in EXCLUDED_FILE_NAMES:
-                    continue
                 file_path = os.path.join(dirpath, filename)
                 relative_path = os.path.relpath(file_path, repo_root)
                 for line_number, needle in scan_file(file_path):
@@ -109,6 +109,16 @@ def run_self_test():
         with open(bad_path, "w", encoding="utf-8") as handle:
             handle.write("This file mentions jdrakes by name.\n")
 
+        case_dir = os.path.join(temp_dir, "evals2", "some-case")
+        os.makedirs(case_dir)
+        prompt_path = os.path.join(case_dir, "prompt.md")
+        with open(prompt_path, "w", encoding="utf-8") as handle:
+            handle.write("A written prompt that names jdrakes.\n")
+
+        nested_readme = os.path.join(case_dir, "README.md")
+        with open(nested_readme, "w", encoding="utf-8") as handle:
+            handle.write("This nested README names jdrakes.\n")
+
         captured = io.StringIO()
         original_stdout = sys.stdout
         sys.stdout = captured
@@ -121,6 +131,10 @@ def run_self_test():
         assert exit_code == 1, f"expected exit 1, got {exit_code}"
         assert "bad.md" in output, f"expected bad.md named in output, got: {output!r}"
         assert "clean.md" not in output, f"expected clean.md absent, got: {output!r}"
+        assert "prompt.md" in output, f"expected evals2 scanned, got: {output!r}"
+        assert os.path.join("evals2", "some-case", "README.md") in output, (
+            f"a README nested under a scan directory must be scanned, got: {output!r}"
+        )
         run_git_self_test()
         print("self-test passed")
         return 0
@@ -133,7 +147,9 @@ def run_git_self_test():
     would publish, so an ignored run artifact holding a machine path fails
     the build. A scanner that cries wolf on its own eval output gets turned
     off. Here the ignored file leaks and must be skipped; the tracked one
-    leaks and must be caught."""
+    leaks and must be caught. It also pins the README rule: the repository
+    root README.md is the one file allowed to name the author, while a
+    README nested under a scan directory is content and is scanned."""
     temp_dir = tempfile.mkdtemp(prefix="test_no_leaks_git_")
     try:
         subprocess.run(["git", "init", "-q", temp_dir], check=True)
@@ -146,6 +162,10 @@ def run_git_self_test():
             handle.write('{"root": "/Users/jdrakes/somewhere"}\n')
         with open(os.path.join(skills_dir, "tracked.md"), "w", encoding="utf-8") as handle:
             handle.write("This one mentions jdrakes and is not ignored.\n")
+        with open(os.path.join(skills_dir, "README.md"), "w", encoding="utf-8") as handle:
+            handle.write("This nested README mentions jdrakes.\n")
+        with open(os.path.join(temp_dir, "README.md"), "w", encoding="utf-8") as handle:
+            handle.write("The root README names James, which is allowed.\n")
 
         captured = io.StringIO()
         original_stdout = sys.stdout
@@ -159,6 +179,12 @@ def run_git_self_test():
         assert exit_code == 1, f"expected exit 1, got {exit_code}"
         assert "tracked.md" in output, f"expected tracked.md named, got: {output!r}"
         assert "run.json" not in output, f"ignored file must be skipped, got: {output!r}"
+        assert os.path.join("skills", "example", "README.md") in output, (
+            f"a README nested under a scan directory must be scanned, got: {output!r}"
+        )
+        assert "\nREADME.md" not in "\n" + output, (
+            f"the root README.md must stay exempt, got: {output!r}"
+        )
     finally:
         shutil.rmtree(temp_dir)
 

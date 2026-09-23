@@ -1,0 +1,26 @@
+schema_version: "1.0"
+name: why-is-the-table-ragged
+execution:
+  prompt: "why does one long value wreck the whole table, is that just the padding in format.py"
+  max_turns: 10
+  allowed_tools: [Skill]
+  append_system_prompt: |
+    You are working in a small Python command-line tool. It has three
+    source files and a test file, and `make test` runs the tests.
+
+    src/store.py has load(path), which reads a JSON file and returns a
+    list of record dicts, and save(path, rows), which writes one.
+
+    src/format.py has to_table(rows, columns). It measures every column's
+    widest cell, then pads each cell to that width with ljust and joins
+    them with two spaces. It does not truncate, so one very wide value
+    pushes its whole column wider and breaks the layout at a fixed
+    terminal width.
+
+    src/cli.py parses arguments, takes a path and an optional
+    --columns, calls load then to_table, and prints the result. With no
+    --columns it uses the keys of the first row, in their JSON order.
+
+    tests/test_format.py has three tests for to_table's padding.
+
+    Makefile has one target, test, running python3 -m pytest tests/ -q.
