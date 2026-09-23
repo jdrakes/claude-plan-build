@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Scan skills/, agents/, docs/, evals/ and evals2/ for leaked private
-references.
+"""Scan skills/, agents/, docs/, evals/, evals2/ and tests/ for leaked
+private references.
 
 Real run:  python3 scripts/test_no_leaks.py
 Self-test: python3 scripts/test_no_leaks.py --self-test
@@ -13,14 +13,37 @@ import sys
 import tempfile
 from pathlib import Path
 
-LEAK_STRINGS = ["James", "jdrakes", "~/workspace", "knowledge-base", "jamesdrakes.com"]
-SCAN_DIR_NAMES = {"skills", "agents", "docs", "evals", "evals2"}
+# Matching is case-sensitive and substring-based, which leaves two
+# false-positive risks worth knowing about. "Spruce" is an ordinary English
+# word as well as a former employer. "job_search" will not fire on the
+# phrase "job search", but "job-search-archive" would fire on any future
+# prose that happens to name a job-search archive meaning something else.
+# "James_Drakes" is deliberately absent: it contains "James", which already
+# matches.
+LEAK_STRINGS = [
+    "James",
+    "jdrakes",
+    "~/workspace",
+    "knowledge-base",
+    "jamesdrakes.com",
+    "Drakes",
+    "H-E-B",
+    "Spruce",
+    "IdealSpot",
+    "job-search-archive",
+    "job_search",
+    "james-drakes",
+    "resumeio-",
+    "claude-config",
+]
+SCAN_DIR_NAMES = {"skills", "agents", "docs", "evals", "evals2", "tests"}
 EXCLUDED_DIR_NAMES = {".claude-plugin", "scripts", ".git"}
 
 
 def find_scan_roots(repo_root):
-    """Find every directory named skills/agents/docs/evals/evals2 anywhere
-    under repo_root, without descending into excluded directories."""
+    """Find every directory named skills/agents/docs/evals/evals2/tests
+    anywhere under repo_root, without descending into excluded
+    directories."""
     roots = []
     for dirpath, dirnames, _ in os.walk(repo_root):
         dirnames[:] = [name for name in dirnames if name not in EXCLUDED_DIR_NAMES]
@@ -62,7 +85,8 @@ def publishable_files(repo_root):
 
 def scan_repo(repo_root):
     """Return a list of (relative_path, line_number, needle) hits under
-    repo_root's skills/, agents/, docs/, evals/ and evals2/ directories.
+    repo_root's skills/, agents/, docs/, evals/, evals2/ and tests/
+    directories.
 
     The repository's own README.md is never scanned: nothing above it is a
     scan directory, so it is the one file allowed to name the author. A
@@ -119,6 +143,25 @@ def run_self_test():
         with open(nested_readme, "w", encoding="utf-8") as handle:
             handle.write("This nested README names jdrakes.\n")
 
+        # Pins the two resume-kit additions: tests/ is a scan directory, and
+        # the nine strings below are on the list. One needle per line, and no
+        # line matches a needle other than its own, so dropping any string
+        # from LEAK_STRINGS drops exactly one expected line from the report.
+        leaky_dir = os.path.join(temp_dir, "tests")
+        os.makedirs(leaky_dir)
+        with open(os.path.join(leaky_dir, "leaky.md"), "w", encoding="utf-8") as handle:
+            handle.write(
+                "Drakes\n"
+                "H-E-B\n"
+                "Spruce\n"
+                "IdealSpot\n"
+                "job-search-archive\n"
+                "job_search\n"
+                "james-drakes\n"
+                "resumeio-\n"
+                "claude-config\n"
+            )
+
         captured = io.StringIO()
         original_stdout = sys.stdout
         sys.stdout = captured
@@ -135,6 +178,22 @@ def run_self_test():
         assert os.path.join("evals2", "some-case", "README.md") in output, (
             f"a README nested under a scan directory must be scanned, got: {output!r}"
         )
+        leaky_relative = os.path.join("tests", "leaky.md")
+        for line_number, needle in [
+            (1, "Drakes"),
+            (2, "H-E-B"),
+            (3, "Spruce"),
+            (4, "IdealSpot"),
+            (5, "job-search-archive"),
+            (6, "job_search"),
+            (7, "james-drakes"),
+            (8, "resumeio-"),
+            (9, "claude-config"),
+        ]:
+            expected_line = f"{leaky_relative}:{line_number}: {needle}"
+            assert expected_line in output, (
+                f"expected {expected_line!r} in output, got: {output!r}"
+            )
         run_git_self_test()
         print("self-test passed")
         return 0
