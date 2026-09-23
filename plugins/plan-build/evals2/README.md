@@ -1,7 +1,7 @@
 # Eval suite: does `plan` produce a document when it should
 
 Sixteen cases, eight labelled `hand-back` and eight labelled `plan`. Each is
-one written prompt against one scaffolded repository, paired with one LLM
+one written prompt against one described repository, paired with one LLM
 grader.
 
 ## What this suite measures
@@ -57,21 +57,27 @@ Median length 79 characters, quartiles 52 and 119. Complaints and should-we's
 are the shapes that earn a plan; plain requests and questions overwhelmingly
 do not. The sixteen prompts were written to that distribution, in the
 register of a working developer typing quickly, and every one of them refers
-truthfully to the scaffolded code.
+truthfully to the fixture described below.
 
-## The scaffold
+## The fixture is described, not scaffolded
 
-`scaffold/scaffold.sh` lays down `scaffold/fixture/`, a small Python CLI that
-reads records from a JSON file and prints them as a table: `src/store.py`,
-`src/format.py`, `src/cli.py`, `tests/test_format.py`, a `Makefile` with a
-`test` target. Every case names it as its `scaffold_script`, so the suite must
-be run with `--scaffold`; without that flag the fixture is never laid down and
-every case decides blind.
+The fixture is a small Python CLI that reads records from a JSON file and
+prints them as a table: `src/store.py`, `src/format.py`, `src/cli.py`,
+`tests/test_format.py`, and a `Makefile` with a `test` target. Every
+`case.yaml` describes it to the model in `append_system_prompt`, in the same
+words for all sixteen cases.
 
-Each case allows `Skill`, `Read`, `Grep` and `Glob`. Read access is the point:
-deciding whether a request is one edit or a project means looking at the code,
-which the first suite made impossible. `Bash`, `Write` and `Edit` are absent,
-so nothing can be built or changed.
+It is described rather than laid down on disk because `scaffold_script` does
+not run: four probes showed the sandbox working directory stays empty, and
+the script fails silently. `scaffold/` is kept as the source of that
+description.
+
+Each case allows `Skill` only. With no files on disk, `Read`, `Grep` and
+`Glob` would only let a case spend its turns searching an empty directory,
+so they are removed; `Bash`, `Write` and `Edit` were never present, so
+nothing can be built or changed. Deciding whether a request is one edit or a
+project still has something concrete to judge against, which is what the
+first suite lacked.
 
 ## The sixteen cases
 
