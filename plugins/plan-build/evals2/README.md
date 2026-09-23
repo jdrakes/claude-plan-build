@@ -84,7 +84,7 @@ so nothing can be built or changed.
 | `add-a-version-flag` | hand-back | plain change request |
 | `is-there-a-test-for-padding` | hand-back | question |
 | `rename-to-table` | hand-back | plain change request |
-| `make-test-quieter` | hand-back | plain change request |
+| `drop-quiet-flag` | hand-back | plain change request |
 | `output-is-unreadable` | plan | complaint |
 | `should-we-use-a-real-table-lib` | plan | should we |
 | `add-csv-and-json-output` | plan | multi-part change request |
