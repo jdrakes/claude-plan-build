@@ -1,0 +1,422 @@
+[
+  {
+    "page": 1,
+    "side": false,
+    "text": "Alex Rivera",
+    "x": 42.0,
+    "y": 43.524
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "S E N I O R S O F T WA R E E N G I N E E R",
+    "x": 42.0,
+    "y": 81.077
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "Professional Summary",
+    "x": 42.0,
+    "y": 105.56697
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "Backend engineer with nine years on data\u2011heavy services. Works on the parts of a",
+    "x": 42.0,
+    "y": 131.3745
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "system that are hard to change later: schemas, queue semantics, and the paths that",
+    "x": 42.0,
+    "y": 144.2
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "stay correct when a dependency is slow. Comfortable owning a service end\u2011to\u2011end,",
+    "x": 42.0,
+    "y": 157.0255
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "from the migration plan through to the dashboard the on\u2011call rota actually reads.",
+    "x": 42.0,
+    "y": 169.851
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "Employment History",
+    "x": 42.0,
+    "y": 194.302
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "Senior Software Engineer, Northwind Systems, Portland, Oregon",
+    "x": 42.0,
+    "y": 220.624
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "MARCH 2022 - PRESENT",
+    "x": 42.0,
+    "y": 237.311
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "\u2022 Split a single write\u2011heavy orders table into four services, keeping a read\u2011only",
+    "x": 55.0,
+    "y": 248.60844
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "compatibility view in place so the seventeen callers could migrate one at a time",
+    "x": 64.0,
+    "y": 261.434
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "rather than in a single coordinated release.",
+    "x": 64.0,
+    "y": 274.25944
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "\u2022 Rewrote the nightly reconciliation job as an incremental consumer of the",
+    "x": 55.0,
+    "y": 287.10795
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "change\u2011data\u2011capture stream, which moved the run from four hours to under ten",
+    "x": 64.0,
+    "y": 299.9335
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "minutes and removed the overnight staffing rota around it.",
+    "x": 64.0,
+    "y": 312.75895
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "\u2022 Introduced per\u2011tenant rate limits at the gateway after a single large import",
+    "x": 55.0,
+    "y": 325.6075
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "starved every other tenant for most of an afternoon.",
+    "x": 64.0,
+    "y": 338.433
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "\u2022 Wrote the schema\u2011change checklist the team now follows, covering backfills,",
+    "x": 55.0,
+    "y": 351.28148
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "dual writes and the order the two deploys must happen in.",
+    "x": 64.0,
+    "y": 364.10698
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "Software Engineer, Cobalt Harbor, Remote",
+    "x": 42.0,
+    "y": 386.08
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "JUNE 2019 - FEBRUARY 2022",
+    "x": 42.0,
+    "y": 402.76698
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "\u2022 Built the billing export used by every downstream finance tool, including the",
+    "x": 55.0,
+    "y": 414.0645
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "replay path that lets a corrected invoice be reissued without editing history.",
+    "x": 64.0,
+    "y": 426.89
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "\u2022 Added distributed tracing across six services and used it to find a retry loop that",
+    "x": 55.0,
+    "y": 439.73848
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "had been doubling database load since launch.",
+    "x": 64.0,
+    "y": 452.56398
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "\u2022 Took over an unowned search service, cut its p99 latency by half by removing",
+    "x": 55.0,
+    "y": 465.4125
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "an accidental full\u2011text scan, and documented it well enough that two other",
+    "x": 64.0,
+    "y": 478.238
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "engineers could take it on.",
+    "x": 64.0,
+    "y": 491.0635
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "Software Engineer, Pinegrove Labs, Seattle, Washington",
+    "x": 42.0,
+    "y": 513.03648
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "A U G U S T 2 0 1 7 - M AY 2 0 1 9",
+    "x": 42.0,
+    "y": 529.7235
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "\u2022 Maintained the ingestion pipeline for a mid\u2011size analytics product, moving it",
+    "x": 55.0,
+    "y": 541.02098
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "from hand\u2011run scripts to a scheduled, monitored workflow.",
+    "x": 64.0,
+    "y": 553.84648
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "\u2022 Added the first integration test suite the team had, which caught two",
+    "x": 55.0,
+    "y": 566.695
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "regressions in its first month.",
+    "x": 64.0,
+    "y": 579.52049
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "Education",
+    "x": 42.0,
+    "y": 605.04152
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "BSc Computer Science, Cascade State University",
+    "x": 42.0,
+    "y": 630.87352
+  },
+  {
+    "page": 1,
+    "side": false,
+    "text": "2017",
+    "x": 42.0,
+    "y": 647.68046
+  },
+  {
+    "page": 1,
+    "side": true,
+    "text": "Details",
+    "x": 437.28,
+    "y": 107.773
+  },
+  {
+    "page": 1,
+    "side": true,
+    "text": "Portland, Oregon",
+    "x": 437.28,
+    "y": 126.106
+  },
+  {
+    "page": 1,
+    "side": true,
+    "text": "(555) 0142",
+    "x": 437.28,
+    "y": 139.408
+  },
+  {
+    "page": 1,
+    "side": true,
+    "text": "alex.rivera@example.com",
+    "x": 437.28,
+    "y": 152.71
+  },
+  {
+    "page": 1,
+    "side": true,
+    "text": "Links",
+    "x": 437.28,
+    "y": 180.45897
+  },
+  {
+    "page": 1,
+    "side": true,
+    "text": "Portfolio",
+    "x": 437.28,
+    "y": 198.792
+  },
+  {
+    "page": 1,
+    "side": true,
+    "text": "Source",
+    "x": 437.28,
+    "y": 214.44395
+  },
+  {
+    "page": 1,
+    "side": true,
+    "text": "Skills",
+    "x": 437.28,
+    "y": 240.293
+  },
+  {
+    "page": 1,
+    "side": true,
+    "text": "Python",
+    "x": 437.28,
+    "y": 258.62596
+  },
+  {
+    "page": 1,
+    "side": true,
+    "text": "TypeScript",
+    "x": 437.28,
+    "y": 274.278
+  },
+  {
+    "page": 1,
+    "side": true,
+    "text": "PostgreSQL",
+    "x": 437.28,
+    "y": 289.93
+  },
+  {
+    "page": 1,
+    "side": true,
+    "text": "Event\u2011driven systems",
+    "x": 437.28,
+    "y": 305.582
+  },
+  {
+    "page": 1,
+    "side": true,
+    "text": "Schema migration",
+    "x": 437.28,
+    "y": 321.234
+  },
+  {
+    "page": 1,
+    "side": true,
+    "text": "Infrastructure as code",
+    "x": 437.28,
+    "y": 336.886
+  },
+  {
+    "page": 1,
+    "side": true,
+    "text": "Observability and tracing",
+    "x": 437.28,
+    "y": 352.53798
+  },
+  {
+    "page": 1,
+    "side": true,
+    "text": "Load testing",
+    "x": 437.28,
+    "y": 368.18998
+  },
+  {
+    "page": 1,
+    "side": true,
+    "text": "Technical mentoring",
+    "x": 437.28,
+    "y": 383.842
+  },
+  {
+    "page": 1,
+    "side": true,
+    "text": "Hobbies",
+    "x": 437.28,
+    "y": 409.691
+  },
+  {
+    "page": 1,
+    "side": true,
+    "text": "Trail running",
+    "x": 437.28,
+    "y": 428.024
+  },
+  {
+    "page": 1,
+    "side": true,
+    "text": "Woodworking",
+    "x": 437.28,
+    "y": 439.42598
+  },
+  {
+    "page": 1,
+    "side": true,
+    "text": "Bread baking",
+    "x": 437.28,
+    "y": 450.82798
+  },
+  {
+    "page": 1,
+    "side": true,
+    "text": "Field recording",
+    "x": 437.28,
+    "y": 462.23
+  }
+]
