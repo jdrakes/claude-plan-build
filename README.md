@@ -93,15 +93,15 @@ the build's issue and the section of that page the issue names.
 
 ## Does it work?
 
-Measured against the workflow it replaced, over three weeks and four
-projects. Verdict: Adopt, as an override of the cost-per-task criterion and
-not a pass on it, because cost per task is a wash and attention is what the
-flow fixed. Full write up in [docs/evaluation.md](docs/evaluation.md).
+Measured over three weeks and four projects. Verdict: Adopt, as an override
+of the cost-per-task criterion and not a pass on it, because cost per task is
+a wash and attention is what the flow fixed. [Write up](docs/evaluation.md).
 
 | Measure | Replaced flow | This flow |
 |---|---:|---:|
 | Output tokens per task | 60.7k | 38k |
 | Interruptions per task | 1.47 | 0.66 |
+| Context tokens, always on / on invoke, all components | 840 / 61k | 405 / 5.2k |
 
 ## Does the eval work?
 
