@@ -1,8 +1,9 @@
 // components.typ — reusable layout pieces for the resume.io-style two-column
-// design. Constants in `geo` are starting values from the retired HTML pipeline's
-// design-spec.md §1-§5 (true react-pdf measurements, not Chrome-compensated).
-// Task 6 (fidelity calibration) is expected to adjust these against
-// tools/compare.py — treat every number here as a hypothesis, not gospel.
+// design. Every constant in `geo` is a measured value, and design-spec.md
+// §1-§6 records where each one came from and why it is not the number a
+// ruler would give. Read that before changing one, and run
+// tools/check-fidelity.sh after: it is what catches a change that moved the
+// rendered page.
 
 #let geo = (
   page-width: 595.28pt,
@@ -26,8 +27,8 @@
   // like Chrome's, wraps one word early at that width. All matched lines
   // reproduce their target break anywhere in [336.15, 336.5]pt — a plateau
   // almost identical to the HTML version's own [335, 338]pt one — found by
-  // sweeping col-width against the retired HTML pipeline's build and counting
-  // compare.py's "matched" total.
+  // sweeping col-width and counting how many lines kept the calibration
+  // reference's own line breaks.
   col-width: 336.3pt,
   sidebar-x: 403.28pt,
   sidebar-pad-left: 34pt,
@@ -55,9 +56,8 @@
   // at 9pt Lato) to land text at the same x = margin-left + 22pt = 64pt.
   bullet-body-indent: 3.78pt,
   // Date-line separator. Was an em dash, matching the resume.io reference;
-  // no em or en dashes in date lines, so the separator is a plain hyphen.
-  // Costs the fidelity fixture every date line (see check-fidelity.sh and
-  // design-spec.md 7d).
+  // this renderer emits no em or en dashes anywhere, so it is a plain
+  // hyphen. See design-spec.md §3.
   date-sep: "-",
   // Main-column vertical gaps. Starting hypotheses are the retired HTML pipeline's tuned CSS custom properties (its template.html :root block) — the best
   // available approximation of the true react-pdf rhythm, since Typst has
