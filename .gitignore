@@ -1,3 +1,8 @@
 .DS_Store
 __pycache__/
-evals/results/
+
+# Eval run artifacts and raw result JSON: machine-generated, and they embed
+# absolute paths from the machine that ran them, which the leak test fails
+# on. The written-up markdown in docs/ is the artifact worth keeping.
+**/evals/results/
+docs/*.json
