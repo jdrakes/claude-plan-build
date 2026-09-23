@@ -1,0 +1,17 @@
+name: test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The leak scan lists candidates with `git ls-files --cached
+          # --others --exclude-standard`, which needs a real checkout rather
+          # than a shallow export.
+          fetch-depth: 1
+      - run: bash scripts/test.sh
