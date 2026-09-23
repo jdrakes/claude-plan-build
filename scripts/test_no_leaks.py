@@ -13,7 +13,7 @@ import tempfile
 from pathlib import Path
 
 LEAK_STRINGS = ["James", "jdrakes", "~/workspace", "knowledge-base", "jamesdrakes.com"]
-SCAN_DIR_NAMES = {"skills", "agents", "docs", "evals"}
+SCAN_DIR_NAMES = {"skills", "agents", "docs", "evals", "evals2"}
 EXCLUDED_DIR_NAMES = {".claude-plugin", "scripts", ".git"}
 EXCLUDED_FILE_NAMES = {"README.md"}
 
@@ -109,6 +109,12 @@ def run_self_test():
         with open(bad_path, "w", encoding="utf-8") as handle:
             handle.write("This file mentions jdrakes by name.\n")
 
+        case_dir = os.path.join(temp_dir, "evals2", "some-case")
+        os.makedirs(case_dir)
+        prompt_path = os.path.join(case_dir, "prompt.md")
+        with open(prompt_path, "w", encoding="utf-8") as handle:
+            handle.write("A written prompt that names jdrakes.\n")
+
         captured = io.StringIO()
         original_stdout = sys.stdout
         sys.stdout = captured
@@ -121,6 +127,7 @@ def run_self_test():
         assert exit_code == 1, f"expected exit 1, got {exit_code}"
         assert "bad.md" in output, f"expected bad.md named in output, got: {output!r}"
         assert "clean.md" not in output, f"expected clean.md absent, got: {output!r}"
+        assert "prompt.md" in output, f"expected evals2 scanned, got: {output!r}"
         run_git_self_test()
         print("self-test passed")
         return 0
