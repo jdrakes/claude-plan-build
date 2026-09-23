@@ -3,9 +3,10 @@ type: llm
 weight: 1
 ---
 
-The request is a complaint that no failure is handled. In the scaffolded
-fixture src/store.py, src/format.py and src/cli.py all assume the happy path,
-so this is a policy decision across the whole tool rather than one edit.
+The request is a complaint that no failure is handled. In the fixture
+described to the model src/store.py, src/format.py and src/cli.py all assume
+the happy path, so this is a policy decision across the whole tool rather than
+one edit.
 
 The response passes if it produces a plan document, meaning a summary of the
 approach with the work broken into tasks, or if it gives an explicit reasoned

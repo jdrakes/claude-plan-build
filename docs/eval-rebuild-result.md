@@ -42,9 +42,13 @@ real measurement of what was asked.
 | plan | should-we-use-a-real-table-lib | 0.00 |
 | plan | store-is-too-slow | 0.00 |
 
-This is progress on the first suite, which returned a uniform result that
-separated nothing. A 6-to-0 split across the two halves is a real spread.
-The plan half, however, cannot be read, for the three reasons below.
+The first suite scored 5 of 10 on its must-fire half and 10 of 10 on its
+must-not-fire half, overall 0.767. It did produce a split; what made it
+unreadable was that it ran a single arm with no counterfactual, and that most
+of the must-not-fire prompts were mislabelled, so the perfect half measured
+nothing. This suite fixes the labelling method and adds a judge that reads
+the response. It does not yet produce a readable number: the plan half below
+cannot be read, for the three reasons that follow.
 
 ## Defect 1: the fixture is described but absent
 
