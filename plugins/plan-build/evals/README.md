@@ -57,3 +57,46 @@ whether a request is one edit or ten means looking at the code.
    good. Between the two, firing correctly without wasting anyone's tokens
    was judged the more important thing to get right first, so a
    plan-quality suite is a later question, not a gap in this one.
+
+## What a rebuild has to solve
+
+Three problems were found while attempting the rebuild. The first two were
+expected; the third was not, and it constrains where cases can come from.
+
+**1. Class balance is solvable, but only by widening the pool.** The
+original 20 cases were all drawn from sessions where the skill fired.
+Labelled by evidence, that pool yields roughly 17 "should plan" to 3
+"should hand back", which cannot discriminate. Drawing from every session
+instead, and labelling by how many implementation subagents the request
+actually led to, gives roughly 56 to 42. The imbalance was an artefact of
+where cases were sampled from, not of the phenomenon.
+
+**2. Counting subagents mislabels questions.** The count records what
+eventually happened, not what should happen on the turn being scored.
+Several requests that led to 16 or more subagents are questions: "did you
+test that", "what is the proposed next step", "do we have enough data to
+draw conclusions". The skill's own rule is that a question gets answered
+first, and the answer decides whether a plan is needed. Scoring those as
+"must produce a document immediately" contradicts the rule the suite exists
+to test. A usable label needs both signals, shape and outcome, and a stated
+rule for which wins when they disagree.
+
+**3. A real transcript corpus cannot be published.** This is the blocker.
+Prompts sampled across a whole corpus carry medical details, family
+logistics, employer names and other personal content that has nothing to do
+with software and must not ship. The first suite avoided this by accident:
+it sampled only sessions where the skill fired, and those happened to be
+all work. Widening the pool to fix problem 1 reintroduces it directly. A
+keyword denylist does not solve this, because the categories are open
+ended.
+
+So a working suite needs prompts that are either screened one by one by a
+person, or written to match the shape of real ones without being real. The
+second is the honest option for a public repo, with the transcript corpus
+used only to derive the distribution of shapes, never quoted.
+
+## What is still true about the current 20
+
+They are real, they are all work, and they are safe to publish. Their
+graders score invocation, which is the wrong event. They remain a starting
+point for shape, not for labels.
