@@ -41,11 +41,7 @@ boundary, so report it.
 2. Read the test command from the plan's Constraints.
 3. On the base branch, `git status -sb`. Report anything uncommitted; it is
    the user's.
-4. A plan with one task does not get a worktree or a branch-end review.
-   Work on the base branch, run the task, run the test command, and stop at
-   step 3's integration default. Say in one line that you took the short
-   path. For two or more tasks, carry on:
-   `git worktree add .claude/worktrees/<name> -b <name> <base>`. Every
+4. `git worktree add .claude/worktrees/<name> -b <name> <base>`. Every
    command from here runs by absolute path inside it, and every dispatch
    gets that path. `.claude/worktrees/` must be ignored in the repo. If it
    is not, stop and say so: the flow needs that line, and committing to the

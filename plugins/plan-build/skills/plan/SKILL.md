@@ -21,10 +21,12 @@ no document: a plan for work that should not happen invites doing it.
 ## 1a. Too small for a plan
 
 Before writing anything, say what the simplest version that would work is.
-If that is one or two edits, make them and show the diff. Say in one line
-that it was too small for a plan and what you did. A document, a worktree,
-a fresh builder and a branch-end review cost the same whether they carry
-one task or ten.
+If that is one or two edits, stop and hand it back: name the edits and say
+it is too small for a plan. The session makes them. Nothing is built here,
+and that includes small things.
+
+A document, a fresh builder and a branch-end review cost the same whether
+they carry one task or ten.
 
 Measured over 44 runs of this flow: a run costs about 172k output tokens
 and 32 minutes before it builds anything, plus about 11k and 8 minutes per
