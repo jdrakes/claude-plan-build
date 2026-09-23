@@ -18,6 +18,24 @@ Costs and fixes come from what was read, not guesses. A **do not** or
 **not yet** ends with one sentence on what would change the answer, and
 no document: a plan for work that should not happen invites doing it.
 
+## 1a. Too small for a plan
+
+Before writing anything, say what the simplest version that would work is.
+If that is one or two edits, make them and show the diff. Say in one line
+that it was too small for a plan and what you did. A document, a worktree,
+a fresh builder and a branch-end review cost the same whether they carry
+one task or ten.
+
+Measured over 44 runs of this flow: a run costs about 172k output tokens
+and 32 minutes before it builds anything, plus about 11k and 8 minutes per
+task. At one task that fixed cost is 94 percent of the tokens and 80
+percent of the time.
+
+This is the same rule as the one above, pointed the other way. A "do not"
+ships no document because a plan for work that should not happen invites
+doing it. A "do it" that comes to one or two edits ships no document
+because the document costs more than the work.
+
 ## 2. A plan or a design
 
 - **A plan** drives one build. Where the project keeps a design page, the
