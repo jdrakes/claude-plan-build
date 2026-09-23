@@ -1,10 +1,27 @@
-# plan-build
+# claude-plugins
+
+A marketplace of two plugins: `plan-build`, an agent workflow for planning
+and building software changes, and `resume-kit`, an opinionated resume
+toolkit.
+
+## Install
+
+```
+/plugin marketplace add jdrakes/claude-plugins
+/plugin install plan-build@jdrakes
+/plugin install resume-kit@jdrakes
+```
+
+The old `jdrakes/claude-plan-build` URL still resolves, through GitHub's
+rename redirect.
+
+## plan-build
 
 An opinionated Claude Code plugin for planning and building software
 changes: one approved plan, one fresh subagent per task, the project's
 tests as the gate, and one review at the end of the branch.
 
-## The opinions
+### The opinions
 
 These are the argument, and they come before the install instructions on
 purpose. If you disagree with them, the plugin is not for you.
@@ -35,14 +52,7 @@ purpose. If you disagree with them, the plugin is not for you.
 13. **Work that is one or two edits is handed back, not planned.** A plan
     costs the same whether it carries one task or ten. (`plan` 1a)
 
-## Install
-
-```
-/plugin marketplace add jdrakes/claude-plan-build
-/plugin install plan-build@jdrakes
-```
-
-## What is in it
+### What is in it
 
 **`plan`** turns a request into a plan you can approve, or a reasoned no.
 It gives a verdict first, with a table of what the change costs, what it
@@ -76,7 +86,7 @@ branch. It gives two verdicts, whether the branch does what the Summary
 says and whether it is well built, then lists findings ranked most severe
 first, each with the input or state that makes it fail.
 
-## What your project needs to provide
+### What your project needs to provide
 
 | Requirement | Why |
 |---|---|
@@ -91,7 +101,7 @@ The `Integration default` line must read one of `push, PR, verify, merge`,
 A design page is optional. Where a project keeps one, a plan derives from
 the build's issue and the section of that page the issue names.
 
-## Does it work?
+### Does it work?
 
 Measured over three weeks and four projects. Verdict: Adopt, as an override
 of the cost-per-task criterion and not a pass on it, because cost per task is
@@ -103,7 +113,7 @@ a wash and attention is what the flow fixed. [Write up](docs/evaluation.md).
 | Interruptions per task | 1.47 | 0.66 |
 | Context tokens, always on / on invoke, all components | 840 / 61k | 405 / 5.2k |
 
-## Does the eval work?
+### Does the eval work?
 
 No, not yet. A 20 case suite ran clean and answers nothing: must-fire 5 of
 10, must-not-fire 10 of 10, overall 0.767. That score is not a pass mark.
@@ -114,7 +124,7 @@ prompts had led to real builds, so the half that scored perfectly is
 mislabelled. Record: [docs/trigger-eval-attempt.md](docs/trigger-eval-attempt.md),
 [evals/README.md](plugins/plan-build/evals/README.md).
 
-## What this cost to find out
+### What this cost to find out
 
 Nine runs measured by hand, then a corpus of runs across four projects, to
 learn that attention is what the flow fixes and cost per task is a wash.
@@ -122,3 +132,86 @@ Section `1a` exists because of one number out of that: a run costs about
 172k output tokens and 32 minutes before it builds anything, so at one task
 the ceremony is 94 percent of the tokens. The eval suite cost 4.20 USD and
 653 seconds to produce a result that cannot be used as a gate.
+
+## resume-kit
+
+An opinionated resume toolkit: a Typst renderer with its geometry
+documented, an interview skill that records facts before any bullet is
+written, a cold-reader screener agent, and a snapshot test that catches
+layout regressions. It ships no eval suite: these skills fire on explicit
+resume requests, not on the trigger ambiguity plan-build's eval exists to
+measure.
+
+### What is in it
+
+**`resume`** (`resume-kit:resume`) is the Typst renderer. The content is a
+YAML file you own; the skill ships one layout fixture and never a resume of
+its own. It reads the YAML to learn what a resume says, never the PDF,
+because a PDF is a build output and may be older than the content.
+Dispatches `resume-kit:resume-writer` to draft a role's section from facts
+in `KNOWLEDGE.md`, then `resume-kit:resume-review` on the result.
+
+**`resume-facts`** interviews you about one role, card by card, through
+`AskUserQuestion`, and records what you say in `KNOWLEDGE.md`. It writes
+only to that file, never to a resume, so a bullet is written from a fact
+rather than invented.
+
+**`resume-review`** is a cold read before a resume is sent: builds the PDF,
+dispatches the `resume-kit:screener` agent, and relays what would stop it
+getting a screen call, first on its own and then against a posting, when
+you supply one as a file. With no posting file it runs the first pass only.
+
+**`resume-assessment`** measures a resume: page count, bullet balance, how
+much is quantified, and which skills the postings you supply ask for that
+the page does not name. Market text is a file you supply, one posting per
+line. With no such file it reports structure and pages only, rather than
+inventing a gap list.
+
+**`resume-writer`** is the subagent `resume` dispatches to turn
+`KNOWLEDGE.md` facts into bullets for one role, writing only to a draft. A
+bullet that reads well but rests on no recorded fact is the thing it exists
+to prevent.
+
+**`screener`** is the read only subagent `resume-review` dispatches. It
+reads a built resume the way a recruiter and a hiring manager do and
+reports, ranked, what would stop it getting a screen call. It never
+rewrites and never proposes a bullet.
+
+### What your project needs to provide
+
+Run every resume-kit skill from your resume directory; each one resolves
+its working files against the directory the session is started in, not a
+fixed path.
+
+| Requirement | Why |
+|---|---|
+| A content YAML | The source of what the resume says; the skill never reads the PDF for this |
+| `KNOWLEDGE.md` | Interview facts `resume-facts` records and `resume-writer` drafts from |
+| A `drafts/` directory | Where a role's section is drafted before it replaces the live file |
+
+A posting is optional and always supplied as a file you name: `resume-review`
+reads it for its second pass, and `resume-assessment` reads one posting per
+line from a market file for its gap list. Neither fetches a posting itself.
+
+Toolchain: **typst 0.15.1** (the version the snapshot baseline in `resume`
+is pinned to), `pdftotext` from poppler, and `python3` with `pyyaml`.
+
+### The renderer
+
+`design-spec.md` documents the reasoning behind every measured geometry
+value in the Typst template: column widths, font sizes and weights,
+spacing, and why each one holds the number it does. It is what makes the
+renderer editable rather than magic.
+
+`tools/check-fidelity.sh` is the only check in the kit that looks at the
+rendered page rather than the source. It is a **self-snapshot** pinned to
+typst 0.15.1, not a comparison against another renderer's golden reference:
+it renders the shipped example fixture and compares that render elementwise
+against a committed baseline of its own previous render, failing on any
+line whose text, page, column or position moved. Run it after any edit to
+`template.typ` or `components.typ`.
+
+Two genuine regressions caught over this check's life: a render that
+silently depended on the host's installed fonts, fixed with
+`--ignore-system-fonts`, and a fixture located from `$HOME` rather than from
+the script's own location, which broke on any checkout elsewhere.
