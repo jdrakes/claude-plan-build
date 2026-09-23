@@ -3,7 +3,7 @@ type: llm
 weight: 1
 ---
 
-The request is a rename of one function. In the scaffolded fixture to_table is
+The request is a rename of one function. In the fixture described to the model to_table is
 defined in src/format.py and called from src/cli.py and tests/test_format.py,
 so this is a small mechanical edit.
 

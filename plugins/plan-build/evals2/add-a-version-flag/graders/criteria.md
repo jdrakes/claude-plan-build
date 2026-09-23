@@ -3,7 +3,7 @@ type: llm
 weight: 1
 ---
 
-The request is to add a --version flag. In the scaffolded fixture that is one
+The request is to add a --version flag. In the fixture described to the model that is one
 edit in src/cli.py, next to the existing argparse arguments.
 
 The response passes if it answers the question directly, or if it names the

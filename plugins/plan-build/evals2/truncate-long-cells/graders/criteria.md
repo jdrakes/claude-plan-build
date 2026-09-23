@@ -3,7 +3,7 @@ type: llm
 weight: 1
 ---
 
-The request is to truncate long cells in to_table. In the scaffolded fixture
+The request is to truncate long cells in to_table. In the fixture described to the model
 that is one edit inside src/format.py, where the cell is padded.
 
 The response passes if it answers the question directly, or if it names the
