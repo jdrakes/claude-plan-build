@@ -4,5 +4,5 @@
   "version": "0.1.0",
   "author": { "name": "James Drakes" },
   "keywords": ["workflow", "planning", "subagents", "code-review"],
-  "experimental": { "evals": "plugins/plan-build/evals" }
+  "experimental": { "evals": "evals" }
 }
