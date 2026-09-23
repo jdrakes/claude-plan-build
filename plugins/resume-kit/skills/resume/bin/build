@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+# Build a resume PDF from a content file. The single place the typst
+# invocation lives - it used to be duplicated verbatim across three docs,
+# which drifted independently.
+#
+# Usage:
+#   bin/build <content.yaml>              -> <content>.pdf, next to the content file
+#   bin/build <content.yaml> -o <out.pdf> -> override the output path
+set -euo pipefail
+
+usage() {
+  echo "usage: bin/build <content-file> [-o <output.pdf>]" >&2
+  exit 1
+}
+
+[[ $# -ge 1 ]] || usage
+
+content_arg="$1"
+shift
+output_arg=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -o)
+      [[ $# -ge 2 ]] || usage
+      output_arg="$2"
+      shift 2
+      ;;
+    *)
+      usage
+      ;;
+  esac
+done
+
+# skill_dir anchors the template, components and fonts this script ships
+# with. Computed from this script's own location, not from $HOME, so it
+# works even when the skill is reached only through a plugin symlink. -P
+# resolves through that symlink before applying `..`, so a relative
+# argument still lands on the real directory rather than a path back
+# through the link.
+skill_dir="$(cd -P "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# Path resolution: a relative argument resolves against where the user
+# actually ran the command from, not against this script's own location.
+# Captured once, before anything below changes directory.
+orig_dir="$(pwd)"
+
+resolve_path() {
+  case "$1" in
+    /*) printf '%s\n' "$1" ;;
+    *) printf '%s\n' "$orig_dir/$1" ;;
+  esac
+}
+
+content="$(resolve_path "$content_arg")"
+[[ -f "$content" ]] || { echo "content file not found: $content" >&2; exit 1; }
+
+if [[ -n "$output_arg" ]]; then
+  output="$(resolve_path "$output_arg")"
+else
+  # Default: the content file's own name with .pdf, next to the content file
+  # - the behavior the retired build.py had, that the raw typst command lost.
+  output="${content%.*}.pdf"
+fi
+
+case "$output" in
+  *.yaml|*.yml)
+    echo "refusing to write output over a .yaml file: $output" >&2
+    exit 1
+    ;;
+esac
+
+# --root / and absolute paths for content, fonts, and template are required:
+# Typst sandboxes relative reads to its own project root (the template's own
+# directory), so when content lives outside the skill dir (the normal case
+# here), only an absolute path under an unrestricted root can reach it.
+#
+# --ignore-system-fonts keeps the render host-independent: only the committed
+# faces under $skill_dir/fonts are used, never whatever the machine has
+# installed. A host with system fonts present measurably shifts baselines
+# (1.83pt versus 0.75pt against the golden reference), so without this flag
+# the same content renders differently on a laptop and on a CI runner.
+typst compile --root / --ignore-system-fonts \
+  --input "content=$content" \
+  --font-path "$skill_dir/fonts" \
+  "$skill_dir/template.typ" \
+  "$output"
+
+echo "built $output"

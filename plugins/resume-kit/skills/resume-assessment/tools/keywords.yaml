@@ -1,0 +1,106 @@
+# Technology/skill keywords the gap-check watches for in job-posting text.
+# Maintain this over time — add a term the first time a posting uses it and
+# the resume doesn't cover it, so the next assessment catches it too.
+#
+# Matching is case-insensitive, word-boundary. Multi-word terms (e.g.
+# "Node.js") match as a phrase.
+
+languages:
+  - Java
+  - Kotlin
+  - Scala
+  - Go
+  - Golang
+  - Rust
+  - C++
+  - "C#"
+  - Ruby
+  - PHP
+  - Swift
+  - Python
+  - TypeScript
+  - JavaScript
+  - Elixir
+  - Node.js
+
+frontend:
+  - React
+  - Angular
+  - Vue
+  - Svelte
+  - Next.js
+  - Remix
+
+backend_frameworks:
+  - Django
+  - Flask
+  - FastAPI
+  - Spring
+  - Rails
+  - NestJS
+  - Express
+
+databases:
+  - PostgreSQL
+  - MySQL
+  - MongoDB
+  - Redis
+  - Cassandra
+  - DynamoDB
+  - Elasticsearch
+  - SQLite
+  - CockroachDB
+
+messaging_streaming:
+  - Kafka
+  - RabbitMQ
+  - SQS
+  - Kinesis
+  - Pub/Sub
+  - NATS
+
+cloud_infra:
+  - AWS
+  - GCP
+  - Azure
+  - Kubernetes
+  - Docker
+  - Terraform
+  - Ansible
+  - Helm
+  - Lambda
+  - ECS
+  - EKS
+
+cicd:
+  - Jenkins
+  - GitHub Actions
+  - GitLab CI
+  - CircleCI
+  - ArgoCD
+
+api_styles:
+  - GraphQL
+  - gRPC
+  - REST
+  - Webhooks
+
+data_big:
+  - Spark
+  - Flink
+  - Dask
+  - Ray
+  - Airflow
+  - dbt
+  - Snowflake
+  - BigQuery
+
+concepts:
+  - Microservices
+  - Distributed Systems
+  - Event-driven
+  - CI/CD
+  - Machine Learning
+  - LLM
+  - Agentic
+  - Observability

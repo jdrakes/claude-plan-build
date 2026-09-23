@@ -1,0 +1,71 @@
+---
+name: resume
+description: "Builds and edits the user's resume. Use whenever they want to change a bullet, role, skill, summary or contact detail, produce a PDF to send, or ask anything about what their resume says, even if they do not say resume."
+---
+
+# resume
+
+A Typst renderer for a resume. The content is a YAML file the user owns,
+in the directory the session is run from; this skill ships no resume of its
+own beyond one layout fixture. Styling is `template.typ` and
+`components.typ`, and neither is edited to make a new resume.
+
+Read the YAML to learn what a resume says, never the PDF: a PDF is a build
+output and may be older than the content.
+
+## Paths
+
+Two roots, and they are not interchangeable.
+
+- Everything this plugin ships sits under `${CLAUDE_SKILL_DIR}`:
+  `${CLAUDE_SKILL_DIR}/bin/build`, `template.typ`, `components.typ`,
+  `design-spec.md`, and the scripts under `${CLAUDE_SKILL_DIR}/tools`.
+- Everything the user owns sits in the current working directory: the
+  content YAML, `KNOWLEDGE.md`, `drafts/`.
+
+Write the variable verbatim in every command. A relative path with no root
+resolves against the user's resume directory, where none of this plugin
+exists.
+
+Build:
+
+```sh
+${CLAUDE_SKILL_DIR}/bin/build <content.yaml> [-o <out.pdf>]
+```
+
+## Agent names
+
+The agents ship inside this plugin, so they resolve as
+`resume-kit:resume-writer` and `resume-kit:screener`, not as
+`resume-writer` and `screener`. Dispatching the bare names fails with
+"Agent type not found".
+
+## Writing a role's section from facts
+
+If the resume directory is a git checkout, check `git status -sb` and the
+branch. Copy the live file to `drafts/<live-name>-draft.yaml` if no draft
+exists. Confirm `KNOWLEDGE.md` holds interview facts for the role, else run
+`resume-facts` first. Then one `Agent` call with
+`subagent_type: resume-kit:resume-writer`, carrying exactly these lines:
+
+    draft: <absolute path to the draft YAML>
+    role: <role, company, dates, as the draft's entry names them>
+    facts: <the KNOWLEDGE.md section heading, or several, one per line>
+
+Relay its report, build the draft to a temporary path, and run
+`resume-kit:resume-review` on it. The summary is not the writer's: draft
+two candidates in chat, in the author's register, for the user to pick or
+rewrite. Promoting a draft over the live file is the user's call and never
+this skill's.
+
+## After editing the template
+
+`components.typ`'s `geo` dictionary holds measurements calibrated against a
+real rendered reference, so a change to one value moves the whole page;
+`${CLAUDE_SKILL_DIR}/design-spec.md` explains what each one is and why it
+holds that number. After any edit to `template.typ` or `components.typ`,
+run `${CLAUDE_SKILL_DIR}/tools/check-fidelity.sh`. It renders the shipped
+example and compares that render elementwise against the committed
+baseline, failing on any line whose text, page, column or
+position moved (§7 of `design-spec.md`). If the move was deliberate,
+rerun it with `--update` and commit the new baseline with the change.

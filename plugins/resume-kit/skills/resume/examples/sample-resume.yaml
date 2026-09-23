@@ -1,0 +1,97 @@
+# A layout fixture, not a writing sample. Every person, company and school
+# here is invented. Its job is to exercise the renderer: two columns, a
+# sidebar with more than one multi-item block, several roles with differing
+# bullet counts, one education entry, and hyphenated compound words so the
+# non-breaking-hyphen substitution in components.typ is covered.
+#
+# tools/check-fidelity.sh renders this file and compares the result against
+# examples/sample-resume.baseline.json. Editing this file changes the
+# geometry, so the baseline must be regenerated in the same commit:
+#   tools/check-fidelity.sh --update
+
+name: Alex Rivera
+title: Senior Software Engineer
+
+summary: >-
+  Backend engineer with nine years on data-heavy services. Works on the parts
+  of a system that are hard to change later: schemas, queue semantics, and the
+  paths that stay correct when a dependency is slow. Comfortable owning a
+  service end-to-end, from the migration plan through to the dashboard the
+  on-call rota actually reads.
+
+details:
+  - Portland, Oregon
+  - (555) 0142
+  - alex.rivera@example.com
+
+links:
+  - text: Portfolio
+    link: https://example.com/alex-rivera
+  - text: Source
+    link: https://example.com/alex-rivera/code
+
+skills:
+  - Python
+  - TypeScript
+  - PostgreSQL
+  - Event-driven systems
+  - Schema migration
+  - Infrastructure as code
+  - Observability and tracing
+  - Load testing
+  - Technical mentoring
+
+hobbies:
+  - Trail running
+  - Woodworking
+  - Bread baking
+  - Field recording
+
+experience:
+  - role: Senior Software Engineer
+    company: Northwind Systems
+    location: Portland, Oregon
+    start: March 2022
+    end: Present
+    bullets:
+      - Split a single write-heavy orders table into four services, keeping a
+        read-only compatibility view in place so the seventeen callers could
+        migrate one at a time rather than in a single coordinated release.
+      - Rewrote the nightly reconciliation job as an incremental consumer of
+        the change-data-capture stream, which moved the run from four hours to
+        under ten minutes and removed the overnight staffing rota around it.
+      - Introduced per-tenant rate limits at the gateway after a single large
+        import starved every other tenant for most of an afternoon.
+      - Wrote the schema-change checklist the team now follows, covering
+        backfills, dual writes and the order the two deploys must happen in.
+
+  - role: Software Engineer
+    company: Cobalt Harbor
+    location: Remote
+    start: June 2019
+    end: February 2022
+    bullets:
+      - Built the billing export used by every downstream finance tool,
+        including the replay path that lets a corrected invoice be reissued
+        without editing history.
+      - Added distributed tracing across six services and used it to find a
+        retry loop that had been doubling database load since launch.
+      - Took over an unowned search service, cut its p99 latency by half by
+        removing an accidental full-text scan, and documented it well enough
+        that two other engineers could take it on.
+
+  - role: Software Engineer
+    company: Pinegrove Labs
+    location: Seattle, Washington
+    start: August 2017
+    end: May 2019
+    bullets:
+      - Maintained the ingestion pipeline for a mid-size analytics product,
+        moving it from hand-run scripts to a scheduled, monitored workflow.
+      - Added the first integration test suite the team had, which caught two
+        regressions in its first month.
+
+education:
+  - degree: BSc Computer Science
+    school: Cascade State University
+    year: 2017

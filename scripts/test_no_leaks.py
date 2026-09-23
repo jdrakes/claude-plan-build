@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Scan skills/, agents/, docs/, evals/ and evals2/ for leaked private
-references.
+"""Scan skills/, agents/, docs/, evals/, evals2/ and tests/ for leaked
+private references.
 
 Real run:  python3 scripts/test_no_leaks.py
 Self-test: python3 scripts/test_no_leaks.py --self-test
@@ -13,14 +13,48 @@ import sys
 import tempfile
 from pathlib import Path
 
-LEAK_STRINGS = ["James", "jdrakes", "~/workspace", "knowledge-base", "jamesdrakes.com"]
-SCAN_DIR_NAMES = {"skills", "agents", "docs", "evals", "evals2"}
+# Matching is case-insensitive and substring-based. Case-insensitive because
+# a lowercase "james" or "drakes" is the same leak as a capitalised one and
+# used to pass; one uniform rule beats a second list of identity-only
+# strings. Measured before the switch: every string below, matched
+# case-insensitively over all 117 publishable files in the scan set, returns
+# exactly the hits it returned case-sensitively, so nothing already written
+# breaks.
+#
+# Two false-positive risks are worth knowing about, both widened slightly by
+# the case fold. "Spruce" is an ordinary English word as well as a former
+# employer, and lowercase "spruce" now matches too. "job_search" will not
+# fire on the phrase "job search", but "job-search-archive" would fire on any
+# future prose naming a job-search archive that means something else.
+# "James_Drakes" is deliberately absent: it contains "James", which already
+# matches.
+LEAK_STRINGS = [
+    "James",
+    "jdrakes",
+    "~/workspace",
+    "knowledge-base",
+    "jamesdrakes.com",
+    "Drakes",
+    "H-E-B",
+    "Spruce",
+    "IdealSpot",
+    "job-search-archive",
+    "job_search",
+    "james-drakes",
+    "resumeio-",
+    "claude-config",
+    "$HOME/workspace",
+    "974d05a",
+    "superpowers",
+]
+SCAN_DIR_NAMES = {"skills", "agents", "docs", "evals", "evals2", "tests"}
 EXCLUDED_DIR_NAMES = {".claude-plugin", "scripts", ".git"}
 
 
 def find_scan_roots(repo_root):
-    """Find every directory named skills/agents/docs/evals/evals2 anywhere
-    under repo_root, without descending into excluded directories."""
+    """Find every directory named skills/agents/docs/evals/evals2/tests
+    anywhere under repo_root, without descending into excluded
+    directories."""
     roots = []
     for dirpath, dirnames, _ in os.walk(repo_root):
         dirnames[:] = [name for name in dirnames if name not in EXCLUDED_DIR_NAMES]
@@ -35,8 +69,9 @@ def scan_file(path):
     try:
         with open(path, "r", encoding="utf-8", errors="replace") as handle:
             for line_number, line in enumerate(handle, start=1):
+                lowered = line.lower()
                 for needle in LEAK_STRINGS:
-                    if needle in line:
+                    if needle.lower() in lowered:
                         hits.append((line_number, needle))
     except (IsADirectoryError, PermissionError):
         pass
@@ -62,7 +97,8 @@ def publishable_files(repo_root):
 
 def scan_repo(repo_root):
     """Return a list of (relative_path, line_number, needle) hits under
-    repo_root's skills/, agents/, docs/, evals/ and evals2/ directories.
+    repo_root's skills/, agents/, docs/, evals/, evals2/ and tests/
+    directories.
 
     The repository's own README.md is never scanned: nothing above it is a
     scan directory, so it is the one file allowed to name the author. A
@@ -119,6 +155,35 @@ def run_self_test():
         with open(nested_readme, "w", encoding="utf-8") as handle:
             handle.write("This nested README names jdrakes.\n")
 
+        # Pins that tests/ is a scan directory and that each string below is
+        # on the list: every assertion names its own needle, so dropping that
+        # string from LEAK_STRINGS drops exactly that expected line. A line
+        # may report more than one needle ("james-drakes" reports three under
+        # the case fold), which the presence assertions tolerate.
+        #
+        # The last line is the case-fold pin: written in lowercase, it must
+        # still be reported under the capitalised needles "James" and
+        # "Drakes". Case-sensitive matching leaves it silent, which is how a
+        # private path reached a published file once already.
+        leaky_dir = os.path.join(temp_dir, "tests")
+        os.makedirs(leaky_dir)
+        with open(os.path.join(leaky_dir, "leaky.md"), "w", encoding="utf-8") as handle:
+            handle.write(
+                "Drakes\n"
+                "H-E-B\n"
+                "Spruce\n"
+                "IdealSpot\n"
+                "job-search-archive\n"
+                "job_search\n"
+                "james-drakes\n"
+                "resumeio-\n"
+                "claude-config\n"
+                "$HOME/workspace\n"
+                "974d05a\n"
+                "superpowers\n"
+                "written by james drakes in lowercase\n"
+            )
+
         captured = io.StringIO()
         original_stdout = sys.stdout
         sys.stdout = captured
@@ -135,6 +200,27 @@ def run_self_test():
         assert os.path.join("evals2", "some-case", "README.md") in output, (
             f"a README nested under a scan directory must be scanned, got: {output!r}"
         )
+        leaky_relative = os.path.join("tests", "leaky.md")
+        for line_number, needle in [
+            (1, "Drakes"),
+            (2, "H-E-B"),
+            (3, "Spruce"),
+            (4, "IdealSpot"),
+            (5, "job-search-archive"),
+            (6, "job_search"),
+            (7, "james-drakes"),
+            (8, "resumeio-"),
+            (9, "claude-config"),
+            (10, "$HOME/workspace"),
+            (11, "974d05a"),
+            (12, "superpowers"),
+            (13, "James"),
+            (13, "Drakes"),
+        ]:
+            expected_line = f"{leaky_relative}:{line_number}: {needle}"
+            assert expected_line in output, (
+                f"expected {expected_line!r} in output, got: {output!r}"
+            )
         run_git_self_test()
         print("self-test passed")
         return 0
