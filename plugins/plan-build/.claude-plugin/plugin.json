@@ -1,8 +1,17 @@
 {
   "name": "plan-build",
   "description": "An opinionated agent workflow for planning and building software changes: one approved plan, one fresh subagent per task, the project's tests as the gate, one review at the end of the branch.",
-  "version": "0.1.0",
-  "author": { "name": "James Drakes" },
-  "keywords": ["workflow", "planning", "subagents", "code-review"],
-  "experimental": { "evals": "evals" }
+  "version": "0.1.1",
+  "author": {
+    "name": "James Drakes"
+  },
+  "keywords": [
+    "workflow",
+    "planning",
+    "subagents",
+    "code-review"
+  ],
+  "experimental": {
+    "evals": "evals"
+  }
 }

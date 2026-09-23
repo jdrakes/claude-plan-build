@@ -23,6 +23,12 @@ Do not ask whether to continue between tasks and do not send progress
 summaries. If a later task depends on a decision, one line in that task's
 Intent.
 
+## Agent names
+
+The agents ship inside this plugin, so they resolve as `plan-build:builder`
+and `plan-build:reviewer`, not as `builder` and `reviewer`. Dispatching the
+bare names fails with "Agent type not found".
+
 ## Models
 
 A task's `Model` is `haiku`, `sonnet` or `opus`; absent means sonnet. If a
@@ -50,8 +56,8 @@ boundary, so report it.
 
 ## 2. Each task, in order
 
-1. Dispatch the `builder` agent with: the plan's absolute path, the task
-   number, the test command (or "none"), and the model. Description
+1. Dispatch the `plan-build:builder` agent with: the plan's absolute path,
+   the task number, the test command (or "none"), and the model. Description
    `Task N: <task name>`. Tell it the plan file is not committed, so its
    commit message must say what changed, why, and any decision it made.
    Wait for it.
@@ -71,8 +77,9 @@ boundary, so report it.
 ## 3. Close
 
 1. Run the test command; red stops here.
-2. Dispatch the `reviewer` agent with the plan's path, the base SHA and the
-   head SHA; description `Review <branch>`. For each finding that is a real
+2. Dispatch the `plan-build:reviewer` agent with the plan's path, the base
+   SHA and the head SHA; description `Review <branch>`. For each finding
+   that is a real
    failure, append `### Task N: fix <finding>` (Files, Intent, Accepts
    when, `Model: opus`) and run it through step 2 once; a fix that fails is
    reported, not retried. Other findings go in the report.
