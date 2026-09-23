@@ -14,4 +14,19 @@ jobs:
           # --others --exclude-standard`, which needs a real checkout rather
           # than a shallow export.
           fetch-depth: 1
+
+      - name: Install poppler-utils (pdftotext)
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+
+      - name: Install typst 0.15.1
+        run: |
+          curl --fail -sL -o /tmp/typst.tar.xz \
+            https://github.com/typst/typst/releases/download/v0.15.1/typst-x86_64-unknown-linux-musl.tar.xz
+          tar -xf /tmp/typst.tar.xz -C /tmp
+          sudo install -m 755 /tmp/typst-x86_64-unknown-linux-musl/typst /usr/local/bin/typst
+          typst --version
+
+      - name: Install Python dependencies
+        run: pip install pyyaml
+
       - run: bash scripts/test.sh
