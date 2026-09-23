@@ -6,3 +6,7 @@ __pycache__/
 # on. The written-up markdown in docs/ is the artifact worth keeping.
 **/evals/results/
 docs/*.json
+
+# Worktrees the build skill creates. ~/.claude is not involved here; this
+# is the repo-local .claude/ the flow uses for its own worktrees.
+.claude/
