@@ -186,7 +186,7 @@
       #nbh(job.role), #nbh(job.company)#if location != none and location != "" [, #nbh(location)]
     ]
     #v(geo.gap-title-date)
-    #text(size: geo.date-size, tracking: 1pt, fill: geo.date-grey)[
+    #text(size: geo.date-size, fill: geo.date-grey)[
       #upper(if end != none { job.start + " " + geo.date-sep + " " + end } else { job.start })
     ]
   ]
@@ -216,7 +216,7 @@
     #set par(leading: 7.02pt)
     #text(weight: 700, size: geo.job-title-size)[#nbh(edu.degree), #nbh(edu.school)]
     #v(geo.gap-edu-year)
-    #text(size: geo.date-size, tracking: 1pt, fill: geo.date-grey)[#if year != none and year != "" [#upper(year)]]
+    #text(size: geo.date-size, fill: geo.date-grey)[#if year != none and year != "" [#upper(year)]]
   ]
 }
 

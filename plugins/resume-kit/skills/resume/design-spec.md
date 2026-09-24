@@ -56,11 +56,11 @@ on what the host has installed:
 | Element | Font | Size | Notes |
 |---|---|---|---|
 | Name | Oswald Medium | 22pt | |
-| Subtitle | Lato Regular | 6pt | uppercase, letter-spacing `1pt` |
+| Subtitle | Lato Regular | 6pt | uppercase, no letter-spacing (see §7e) |
 | Section headings | Oswald Medium | 14pt | Professional Summary / Employment History / Education |
 | Body + bullets | Lato Regular | 9pt | line pitch `12.825pt` (see §6 point 2) |
 | Job title / degree | Lato **Bold** | 10pt | |
-| Date lines / year | Lato Regular | 6pt | uppercase, letter-spacing `1pt`, `#959BA6` |
+| Date lines / year | Lato Regular | 6pt | uppercase, no letter-spacing (see §7e), `#959BA6` |
 | Sidebar headings | Oswald Medium | 9pt | |
 | Sidebar items | Lato Regular | 8pt | pure white |
 
@@ -321,6 +321,17 @@ Left margin and sidebar geometry are **not** overridable; they were
 calibrated together. The intended use is squeezing a long draft onto a page
 boundary without cutting a bullet: `40pt` top and bottom is a reasonable
 floor to reach for, still above the `36pt` (0.5in) print-safe minimum.
+
+## 7e. No letter-spacing on the subtitle and date lines
+
+The subtitle and the date lines were set with `1pt` tracking, copied from
+resume.io. At 6pt that gap is wide enough that `pdftotext` reads each letter
+as its own word: the title extracted as "S E N I O R S O F T WA R E ..." and
+dates as "A U G U S T 2 0 1 7 - M AY 2 0 1 9", so an applicant tracking
+system could miss the title and every tenure. Screener reads against real
+postings flagged it independently. Measured at 6pt, `0.6pt` still split and
+`0.5pt` did not; the tracking is removed rather than set at that edge, since
+other parsers draw the line elsewhere. `tests/test_text_layer.py` holds it.
 
 ## 8. Font provenance
 

@@ -77,7 +77,7 @@
   #v(geo.pad-top)
   #text(font: "Oswald", weight: 500, size: geo.name-size, fill: black)[#data.name]
   #v(geo.gap-name-subtitle)
-  #text(size: geo.subtitle-size, tracking: 1pt)[#upper(data.title)]
+  #text(size: geo.subtitle-size)[#upper(data.title)]
 
   #let summary = data.at("summary", default: "")
   #if summary != "" [
