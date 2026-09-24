@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Report how close a render sits to a reference document from another tool.
 
-`snapshot.py` is the gate, not this file. It compares a render against its
-own previous render, elementwise, and fails the build. This one compares a
-render against a foreign document and only reports. The reason is structural
+`check-fidelity.sh` is the gate, not this file. It is what CI runs, and it
+wraps `snapshot.py`, which compares a render against its own previous
+render, elementwise, and fails the build. This one compares a render
+against a foreign document and only reports. The reason is structural
 and anyone can check it: matching lines by their text asks whether a line
 exists *somewhere* in the other document, so a page overflow, a whole column
 sliding sideways and a stray extra line all read as clean. That tolerance is
@@ -69,13 +70,25 @@ class Comparison(NamedTuple):
     orphans: list  # render lines no reference line claimed
 
 
+# Em dash, en dash, non-breaking hyphen, minus: everything a renderer might
+# write where another writes a plain ASCII hyphen. U+2011 is not defensive
+# padding. This template emits it deliberately: `components.typ`'s `nbh()`
+# replaces the hyphen in a compound so a line break cannot split it, which
+# is the text-extraction fix `design-spec.md` section 7c explains. Any
+# reference document from another renderer has an ASCII hyphen in that same
+# place, so without this fold two copies of one document disagree on every
+# hyphenated compound, and those lines report as unmatched on one side and
+# orphaned on the other.
+HYPHENS = re.compile("[—–‑−]")
+
+
 def norm(text):
     """Key a line by its text alone.
 
-    Whitespace and the choice of dash glyph are things two renderers
+    Whitespace and the choice of hyphen glyph are things two renderers
     disagree about for the same semantic line, so neither belongs in the key.
     """
-    return re.sub(r"\s+", "", text).replace("—", "-").replace("–", "-")
+    return HYPHENS.sub("-", re.sub(r"\s+", "", text))
 
 
 def compare(reference, generated):
