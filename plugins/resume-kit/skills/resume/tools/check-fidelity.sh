@@ -28,14 +28,31 @@ if [[ "${1:-}" == "--update" ]]; then
   mode="--write"
 fi
 
+# Skipping is right on a contributor's laptop, which cannot be expected to
+# carry one exact typst. It is never right on a runner that installs its own
+# toolchain: there a skip means the workflow is broken, and exiting 0 would
+# make the green tick mean nothing. RESUME_KIT_REQUIRE_FIDELITY=1 turns every
+# skip below into a failure. CI sets it.
+require="${RESUME_KIT_REQUIRE_FIDELITY:-}"
+
+skip_or_fail() {  # message
+  if [[ -n "$require" ]]; then
+    echo "FAIL: $1" >&2
+    echo "      RESUME_KIT_REQUIRE_FIDELITY is set, so this is a failure rather" >&2
+    echo "      than a skip: the renderer went unchecked." >&2
+    exit 1
+  fi
+  echo "SKIP: $1"
+  exit 0
+}
+
 for tool in typst pdftotext python3; do
-  command -v "$tool" >/dev/null 2>&1 || { echo "SKIP: $tool not installed"; exit 0; }
+  command -v "$tool" >/dev/null 2>&1 || skip_or_fail "$tool not installed"
 done
 
 actual_typst="$(typst --version | awk '{print $2}')"
 if [[ "$actual_typst" != "$expected_typst" ]]; then
-  echo "SKIP: the baseline is pinned to typst $expected_typst, this host has $actual_typst"
-  exit 0
+  skip_or_fail "the baseline is pinned to typst $expected_typst, this host has $actual_typst"
 fi
 
 work="$(mktemp -d)"
