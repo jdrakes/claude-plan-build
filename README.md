@@ -215,3 +215,17 @@ Two genuine regressions caught over this check's life: a render that
 silently depended on the host's installed fonts, fixed with
 `--ignore-system-fonts`, and a fixture located from `$HOME` rather than from
 the script's own location, which broke on any checkout elsewhere.
+
+`tools/calibrate.py` is not the gate; `check-fidelity.sh` is. It answers a
+different question, the one a new user actually has: you have a resume
+whose layout you like, produced by something other than this template, and
+you want to know how close this renderer gets to it. Because the two PDFs
+come from different renderers, line order, line breaking and pagination all
+differ for legitimate reasons, so it finds each reference line by its text
+rather than by its position and reports how far it moved, in points,
+alongside the reference lines it could not find a match for and the
+lines in your render that have no counterpart in the reference at all. It
+never fails a build: it exits 0 whenever it ran and prints a report for you
+to read, not a verdict.
+
+    python3 tools/calibrate.py reference.pdf generated.pdf
