@@ -15,6 +15,24 @@ toolkit.
 The old `jdrakes/claude-plan-build` URL still resolves, through GitHub's
 rename redirect.
 
+## Releasing
+
+Each plugin's manifest pins a `version`. Claude Code only treats a plugin
+as updated when that string changes, so pushing ordinary commits to `main`
+never rolls anything out on its own, even with auto-update on.
+
+To cut a release:
+
+```
+scripts/release.sh <plugin> <version>
+git push origin main --follow-tags
+```
+
+`scripts/release.sh` bumps the manifest's `version`, runs `scripts/test.sh`
+as the gate, then commits and tags `<plugin>-v<version>`. It refuses to run
+against a dirty working tree, and it stops without pushing so the rollout
+stays a deliberate second step.
+
 ## plan-build
 
 An opinionated Claude Code plugin for planning and building software
