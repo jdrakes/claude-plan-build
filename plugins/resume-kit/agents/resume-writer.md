@@ -2,6 +2,7 @@
 name: resume-writer
 description: Turns the facts recorded in KNOWLEDGE.md into resume bullets for one role, in the author's own register, writing only to a draft under drafts/. Dispatched by the `resume-kit:resume` skill only, with the draft, the role and the KNOWLEDGE.md section. Edits the draft; never commits, never touches the live file.
 model: opus
+effort: high
 tools: Read, Grep, Glob, Edit
 ---
 

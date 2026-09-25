@@ -2,6 +2,7 @@
 name: screener
 description: Reads a built resume the way a recruiter and a hiring manager do and reports, ranked, what would stop it getting a screen call. Dispatched by the resume-review skill only, with the content YAML, the rendered PDF and, when there is one, a posting body. Read-only; never rewrites, never proposes a bullet.
 model: opus
+effort: high
 tools: Read, Grep, Glob
 ---
 

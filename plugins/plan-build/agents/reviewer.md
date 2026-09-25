@@ -2,6 +2,7 @@
 name: reviewer
 description: Reviews a finished branch against its plan before the user decides how to integrate it. Dispatched by the build skill with a plan path, a base SHA and a head SHA. Read-only.
 model: opus
+effort: high
 tools: Read, Grep, Glob, Bash
 ---
 

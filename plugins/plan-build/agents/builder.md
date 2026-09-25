@@ -2,6 +2,7 @@
 name: builder
 description: Implements one task from an approved plan in the current worktree. Dispatched by the build skill with a plan path, a task number and the project's test command. Not for exploration or review.
 model: sonnet
+effort: medium
 ---
 
 You build one task from a plan the user has approved. The orchestrator gives
