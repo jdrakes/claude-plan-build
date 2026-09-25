@@ -50,41 +50,35 @@ because the document costs more than the work.
   implies become GitHub issues, one each, naming the section. The PR that
   closes the issue is the record.
 
-## 3. The plan
+## 3. Dispatch the planner
 
-```markdown
-# <Title>
+This section covers a plan; a design, above, is agreed in chat and
+written into the design page, never into a document from this flow.
 
-## Summary (what the user approves)
-Verdict and its evidence. Goal, and the design section each task serves;
-a task serving none is a proposal, listed apart. The simplest version that
-would work and what this adds beyond it. How it is tested. Cost if wrong.
+The document itself, its exact template and the rules for writing tasks,
+is the `plan-build:planner` agent's job, not this skill's. It runs at
+higher reasoning effort than a session typically carries, and it writes
+the file itself. Dispatch `plan-build:planner`, not `planner`: the agent
+ships inside this plugin and resolves under the plugin's namespace,
+exactly as `build`'s dispatch of `plan-build:builder` does.
 
-| # | Task | Model | Why |
+Compute the target path before dispatching: `plansDirectory` from
+settings when the project sets one, else `~/.claude/plans/`, filed under
+a slug of the title. Give the agent exactly these nine lines:
 
-## Constraints
-Repo and branch state. Test command, or "none". What is not touched.
+    verdict: <the decided verdict and its one-line evidence>
+    goal: <what the plan is for>
+    design_path: <absolute path to the file holding the design page, or "none">
+    design_section: <the section within it this plan derives from, or "none">
+    simplest: <the simplest version 1a named, and whether this plan is it or goes beyond it>
+    untouched: <what section 1's evidence says must not change, or "none">
+    path: <the computed target path>
+    date: <today's date>
+    repo: <absolute path to the repository this plan is for>
 
-## Tasks
-### Task N: <name>
-- [ ] done
-**Files.** Create / modify, exact paths.
-**Produces.** What later tasks use from this one: names, signatures.
-**Intent.** What to build and why. Complete code when known (then haiku).
-**Accepts when.** A check someone can run.
-**Model.** haiku | sonnet | opus. Omit for sonnet.
-```
-
-- A task is one commit's worth of work with its own test; the build gates
-  each task on that test alone.
-- Same-shape edits across several files are one task.
-- haiku when the task contains the exact edit; opus when it touches several
-  files or a stated invariant; omit otherwise.
-- No placeholders: no "handle edge cases", no "similar to Task N". The
-  builder that reads a task has no memory of this conversation.
-- A decision a task depends on goes in that task's Intent.
-
-## 4. Check
-
-Every Summary claim has a task; every task has Files, Produces, Intent and
-Accepts when; names agree across tasks.
+Wait for it. It reports `done: <path>` or `stuck: <what is missing>`. A
+`stuck` is yours to resolve, not the user's, unless resolving it needs an
+answer only they have. Most often that is the design page needing an edit
+first, per section 2 above. Once it reports `done`, read the document
+back and show the user its Summary for approval; the Tasks are the
+builder's.
