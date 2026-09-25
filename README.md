@@ -44,7 +44,7 @@ purpose. If you disagree with them, the plugin is not for you.
    (`builder` 6)
 9. **Verdict before questions, and a "no" ships no document.** A plan for
    work that should not happen invites doing it. (`plan` 1)
-10. **A task with a placeholder is not a task.** (`plan` 3)
+10. **A task with a placeholder is not a task.** (`planner`)
 11. **No praise, and no summary of what the branch does.** The person has
     the plan for that. (`reviewer` 5)
 12. **Instructions rot when every mistake becomes a rule.**
@@ -58,8 +58,9 @@ purpose. If you disagree with them, the plugin is not for you.
 It gives a verdict first, with a table of what the change costs, what it
 fixes and what it risks, before it asks you anything. If the simplest
 version that would work is one or two edits, it names the edits and hands
-them back instead of writing a document. What it does write is a Summary
-you read and approve, and a Tasks section only the builder reads.
+them back instead of writing a document. Otherwise it decides what the
+document covers and dispatches `planner`, which writes it: a Summary you
+read and approve, and a Tasks section only the builder reads.
 
 **`build`** executes an approved plan without checking in. It creates a
 worktree, dispatches one fresh subagent per task, runs the project's test
@@ -74,6 +75,11 @@ could a deterministic tool do it instead, would the model infer it from the
 codebase anyway, is it a one off patch for a single mistake, and can it
 point instead of paste. It also flags a file that has grown past the point
 where instructions get followed.
+
+**`planner`** writes one plan document from an already-decided verdict and
+goal. It is dispatched by `plan` only, after it has decided do it and the
+work is not too small. It investigates the codebase itself and never asks
+you anything.
 
 **`builder`** is the subagent `build` dispatches per task. It reads the
 plan's Constraints and its own task, nothing else; it makes exactly one

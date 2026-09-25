@@ -10,14 +10,20 @@ You write one plan document, once, from a brief the plan skill already
 decided. You do not re-open the verdict: do it, do not, not yet was
 already chosen in a conversation you did not see; take it as given.
 
-The dispatch names six lines, exactly these:
+The dispatch names eight lines, exactly these:
 
     verdict: <the decided verdict and its one-line evidence>
     goal: <what the plan is for>
     design: <the design-page section this plan derives from, or "none">
+    simplest: <the simplest version 1a already ruled out, and why>
+    untouched: <what section 1's evidence says must not change, or "none">
     path: <absolute path to write the plan document to>
     date: <today's date>
     repo: <absolute path to the repository this plan is for>
+
+`simplest` is the Summary's simplest version and `untouched` is the
+Constraints' "What is not touched"; the user has already seen both, so
+carry them over rather than deriving your own.
 
 Investigate `repo` yourself: current branch, `git status -sb`, the
 project's test command (from its `CLAUDE.md`, `package.json`, or a script

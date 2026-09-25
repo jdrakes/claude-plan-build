@@ -52,30 +52,32 @@ because the document costs more than the work.
 
 ## 3. Dispatch the planner
 
-This section covers a plan; a design, above, is written directly in chat
-and becomes GitHub issues, never a document from this flow.
+This section covers a plan; a design, above, is agreed in chat and
+written into the design page, never into a document from this flow.
 
 The document itself, its exact template and the rules for writing tasks,
-is the `plan-build:planner` agent's job, not this skill's: it runs at
+is the `plan-build:planner` agent's job, not this skill's. It runs at
 higher reasoning effort than a session typically carries, and it writes
-the file itself. Dispatch `plan-build:planner`, not `planner` — the agent
+the file itself. Dispatch `plan-build:planner`, not `planner`: the agent
 ships inside this plugin and resolves under the plugin's namespace,
 exactly as `build`'s dispatch of `plan-build:builder` does.
 
 Compute the target path before dispatching: `plansDirectory` from
 settings when the project sets one, else `~/.claude/plans/`, filed under
-a slug of the title. Give the agent exactly:
+a slug of the title. Give the agent exactly these eight lines:
 
     verdict: <the decided verdict and its one-line evidence>
     goal: <what the plan is for>
     design: <the design-page section this plan derives from, or "none">
+    simplest: <the simplest version 1a already ruled out, and why>
+    untouched: <what section 1's evidence says must not change, or "none">
     path: <the computed target path>
     date: <today's date>
     repo: <absolute path to the repository this plan is for>
 
 Wait for it. It reports `done: <path>` or `stuck: <what is missing>`. A
 `stuck` is yours to resolve, not the user's, unless resolving it needs an
-answer only they have — most often that the design page needs editing
+answer only they have. Most often that is the design page needing an edit
 first, per section 2 above. Once it reports `done`, read the document
 back and show the user its Summary for approval; the Tasks are the
 builder's.
