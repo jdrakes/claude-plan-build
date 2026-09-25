@@ -10,11 +10,12 @@ You write one plan document, once, from a brief the plan skill already
 decided. You do not re-open the verdict: do it, do not, not yet was
 already chosen in a conversation you did not see; take it as given.
 
-The dispatch names eight lines, exactly these:
+The dispatch names nine lines, exactly these:
 
     verdict: <the decided verdict and its one-line evidence>
     goal: <what the plan is for>
-    design: <the design-page section this plan derives from, or "none">
+    design_path: <absolute path to the file holding the design page, or "none">
+    design_section: <the section within it this plan derives from, or "none">
     simplest: <the simplest version 1a already ruled out, and why>
     untouched: <what section 1's evidence says must not change, or "none">
     path: <absolute path to write the plan document to>
@@ -31,8 +32,10 @@ it names), and whatever files the goal touches. Never take a file path, a
 signature or a repo fact from the dispatch on trust when a tool can
 confirm it; the dispatch gives you the decision, not the code.
 
-Where `design` names a real section, read it; a plan that needs the
-design to change is not yours to write. Report `stuck: design page needs
+Where `design_section` names a real section, read it from
+`design_path`, which may sit outside `repo`; reading it is allowed even
+though writing stays confined to `path`. A plan that needs the design
+to change is not yours to write. Report `stuck: design page needs
 <what>` instead, and write nothing.
 
 Write exactly this document to `path`:
@@ -75,7 +78,7 @@ task; every task has Files, Produces, Intent and Accepts when; names
 agree across tasks. A document that fails this check is not done; fix it
 or report `stuck`.
 
-Never write outside `path`. Never touch the repository at `repo` beyond
-reading it. Never ask the user anything; you have no way to and no one is
-waiting on you directly. Report in your final message, under 8 lines:
+Never write anywhere except `path`. Reading is allowed at `repo` and,
+when given, at `design_path`. Never ask the user anything; you have no
+way to and no one is waiting on you directly. Report in your final message, under 8 lines:
 `done: <path>`, or `stuck: <what you tried and what is missing>`.

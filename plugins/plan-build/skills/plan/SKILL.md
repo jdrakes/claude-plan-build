@@ -64,11 +64,12 @@ exactly as `build`'s dispatch of `plan-build:builder` does.
 
 Compute the target path before dispatching: `plansDirectory` from
 settings when the project sets one, else `~/.claude/plans/`, filed under
-a slug of the title. Give the agent exactly these eight lines:
+a slug of the title. Give the agent exactly these nine lines:
 
     verdict: <the decided verdict and its one-line evidence>
     goal: <what the plan is for>
-    design: <the design-page section this plan derives from, or "none">
+    design_path: <absolute path to the file holding the design page, or "none">
+    design_section: <the section within it this plan derives from, or "none">
     simplest: <the simplest version 1a already ruled out, and why>
     untouched: <what section 1's evidence says must not change, or "none">
     path: <the computed target path>
