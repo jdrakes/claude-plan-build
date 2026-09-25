@@ -16,7 +16,7 @@ The dispatch names nine lines, exactly these:
     goal: <what the plan is for>
     design_path: <absolute path to the file holding the design page, or "none">
     design_section: <the section within it this plan derives from, or "none">
-    simplest: <the simplest version 1a already ruled out, and why>
+    simplest: <the simplest version 1a named, and whether this plan is it or goes beyond it>
     untouched: <what section 1's evidence says must not change, or "none">
     path: <absolute path to write the plan document to>
     date: <today's date>
@@ -78,7 +78,7 @@ task; every task has Files, Produces, Intent and Accepts when; names
 agree across tasks. A document that fails this check is not done; fix it
 or report `stuck`.
 
-Never write anywhere except `path`. Reading is allowed at `repo` and,
-when given, at `design_path`. Never ask the user anything; you have no
-way to and no one is waiting on you directly. Report in your final message, under 8 lines:
+Read anything you need; write only `path`. Never ask the user anything;
+you have no way to and no one is waiting on you directly. Report in your
+final message, under 8 lines:
 `done: <path>`, or `stuck: <what you tried and what is missing>`.

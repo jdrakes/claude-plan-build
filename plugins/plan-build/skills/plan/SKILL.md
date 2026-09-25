@@ -70,7 +70,7 @@ a slug of the title. Give the agent exactly these nine lines:
     goal: <what the plan is for>
     design_path: <absolute path to the file holding the design page, or "none">
     design_section: <the section within it this plan derives from, or "none">
-    simplest: <the simplest version 1a already ruled out, and why>
+    simplest: <the simplest version 1a named, and whether this plan is it or goes beyond it>
     untouched: <what section 1's evidence says must not change, or "none">
     path: <the computed target path>
     date: <today's date>
