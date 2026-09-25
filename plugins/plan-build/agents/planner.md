@@ -2,7 +2,7 @@
 name: planner
 description: Writes one plan document from an already-decided verdict and goal. Dispatched by the `plan` skill only, after it has decided do it and the work is not too small. Investigates the codebase itself; never asks the user anything.
 model: opus
-reasoning_effort: high
+effort: high
 tools: Read, Grep, Glob, Bash, Write
 ---
 
